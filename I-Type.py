@@ -8,8 +8,15 @@ from idix_engine import (
     combine_with_scenarios,
     determine_archetype,
     monte_carlo_probabilities,
-    compute_archetype_distances,  # optional for future versions
 )
+
+# ============================================================
+# SESSION STATE INIT
+# ============================================================
+
+if "active_tab" not in st.session_state:
+    st.session_state["active_tab"] = "assessment"
+
 
 # ============================================================
 # LOAD CSS
@@ -19,63 +26,71 @@ def load_css():
     try:
         with open("assets/styles.css") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-    except FileNotFoundError:
-        st.warning("⚠ Missing CSS file: assets/styles.css")
+    except:
+        st.warning("⚠ Missing CSS file — assets/styles.css")
 
 load_css()
 
+
 # ============================================================
-# LOAD JSON FILES
+# LOAD JSON
 # ============================================================
 
 def load_json(path, default=None):
     try:
         with open(path, "r") as f:
             return json.load(f)
-    except Exception as e:
-        st.error(f"Error loading {path}: {e}")
-        return default if default is not None else {}
+    except:
+        return default
 
 questions = load_json("data/questions.json", default=[])
 archetypes = load_json("data/archetypes.json", default={})
 scenarios = load_json("data/scenarios.json", default=[])
 
+
 # ============================================================
-# PAGE HEADER
+# HERO SECTION
 # ============================================================
 
 st.markdown("""
 <div class="hero-wrapper">
 <div class="hero">
-<div class="hero-glow"></div>
-<div class="hero-particles"></div>
-<div class="hero-content">
-<h1 class="hero-title">I-TYPE — Innovator Type Assessment</h1>
-<p class="hero-sub">Powered by the Innovator DNA Index™</p>
-</div>
+    <div class="hero-glow"></div>
+    <div class="hero-particles"></div>
+    <div class="hero-content">
+        <h1 class="hero-title">I-TYPE — Innovator Type Assessment</h1>
+        <p class="hero-sub">Powered by the Innovator DNA Index™</p>
+    </div>
 </div>
 </div>
 """, unsafe_allow_html=True)
 
-if "active_tab" not in st.session_state:
-    st.session_state["active_tab"] = "assessment"
 
+# ============================================================
+# TABS
+# ============================================================
 
-assessment_tab, scenario_tab, results_tab, dev_tab = st.tabs(
+tab_assess, tab_scenario, tab_results, tab_dev = st.tabs(
     ["🔍 Assessment", "🧪 Scenarios", "📊 Results", "DEV"]
 )
+
 
 # ============================================================
 # TAB 1 — QUESTIONNAIRE
 # ============================================================
 
-with tabs[0]:
+with tab_assess:
+
+    # If user switched tabs, stop rendering this tab
+    if st.session_state["active_tab"] != "assessment":
+        st.stop()
+
     st.markdown("<h2>Innovation Profile Questionnaire</h2>", unsafe_allow_html=True)
 
     answers = {}
 
     if not questions:
-        st.error("❌ No questions found. Check data/questions.json.")
+        st.error("❌ questions.json missing or empty.")
     else:
         for i, q in enumerate(questions):
 
@@ -89,159 +104,121 @@ with tabs[0]:
             </div>
             """, unsafe_allow_html=True)
 
-            low_label = q.get("labels", {}).get("low", "Low")
-            high_label = q.get("labels", {}).get("high", "High")
-
             answers[text] = {
-                "value": st.slider(
-                    label="",
-                    min_value=1, max_value=5, value=3,
-                    help=f"1 = {low_label}   •   5 = {high_label}",
-                    key=f"q{i}"
-                ),
+                "value": st.slider("", 1, 5, 3, key=f"q{i}"),
                 "dimension": dim,
-                "reverse": reverse,
+                "reverse": reverse
             }
 
-# ============================================================
-# TAB 1 — FOOTER NAVIGATION BUTTONS
-# ============================================================
+    # --------------------------------------------------------
+    # NAVIGATION BUTTONS
+    # --------------------------------------------------------
+    st.markdown("<br>", unsafe_allow_html=True)
 
-colA, colB = st.columns([1,1])
+    col1, col2 = st.columns(2)
 
-with colA:
-    if st.button("➡ Go to Scenarios", key="go_scenarios"):
-        st.session_state["active_tab"] = "scenarios"
+    with col1:
+        if st.button("➡ Go to Scenarios"):
+            st.session_state["active_tab"] = "scenarios"
+            st.experimental_rerun()
 
-with colB:
-    if st.button("📊 Skip to Results", key="go_results"):
-        st.session_state["active_tab"] = "results"
+    with col2:
+        if st.button("📊 Skip to Results"):
+            st.session_state["active_tab"] = "results"
+            st.experimental_rerun()
 
 
 # ============================================================
 # TAB 2 — SCENARIOS
 # ============================================================
 
-with tabs[1]:
+with tab_scenario:
+
+    if st.session_state["active_tab"] != "scenarios":
+        st.stop()
+
     st.markdown("<h2>Scenario-Based Assessment</h2>", unsafe_allow_html=True)
 
     scenario_scores_accum = {
-        "thinking": 0,
-        "execution": 0,
-        "risk": 0,
-        "motivation": 0,
-        "team": 0,
-        "commercial": 0,
+        "thinking": 0, "execution": 0, "risk": 0,
+        "motivation": 0, "team": 0, "commercial": 0
     }
     scenario_count = 0
 
-    if not scenarios:
-        st.error("❌ No scenarios found. Check data/scenarios.json.")
-    else:
-        for i, sc in enumerate(scenarios):
+    for i, sc in enumerate(scenarios):
 
-            title = sc.get("title", f"Scenario {i+1}")
-            desc = sc.get("description", "No description provided.")
+        title = sc.get("title", f"Scenario {i+1}")
+        desc = sc.get("description", "")
 
-            st.markdown(f"""
-            <div class='itype-scenario-card'>
-                <h3>{title}</h3>
-                <p>{desc}</p>
-            </div>
-            """, unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class='itype-scenario-card'>
+            <h3>{title}</h3>
+            <p>{desc}</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-            options = sc.get("options", ["Option A", "Option B"])
-            mapping = sc.get("mapping", {})
+        choice = st.selectbox(
+            "Choose your response:",
+            sc.get("options", []),
+            key=f"sc_{i}"
+        )
 
-            choice = st.selectbox(
-                "Choose your response:",
-                options,
-                key=f"sc{i}"
-            )
+        mapping = sc.get("mapping", {})
+        scores = mapping.get(choice, {})
 
-            score_vec = mapping.get(choice, {
-                "thinking": 0, "execution": 0, "risk": 0,
-                "motivation": 0, "team": 0, "commercial": 0
-            })
+        for k in scenario_scores_accum:
+            scenario_scores_accum[k] += scores.get(k, 0)
 
-            for k in scenario_scores_accum.keys():
-                scenario_scores_accum[k] += score_vec.get(k, 0)
+        scenario_count += 1
 
-            scenario_count += 1
+    scenario_scores = {
+        k: scenario_scores_accum[k] / max(1, scenario_count)
+        for k in scenario_scores_accum
+    }
 
-    scenario_scores = (
-        {k: scenario_scores_accum[k] / scenario_count for k in scenario_scores_accum}
-        if scenario_count > 0
-        else scenario_scores_accum.copy()
-    )
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    if st.button("📊 See Results"):
+        st.session_state["active_tab"] = "results"
+        st.experimental_rerun()
+
 
 # ============================================================
 # TAB 3 — RESULTS
 # ============================================================
 
-with tabs[2]:
+with tab_results:
+
+    if st.session_state["active_tab"] != "results":
+        st.stop()
+
     st.markdown("<h2>Your Innovation Profile</h2>", unsafe_allow_html=True)
 
-    calc = st.button("🚀 Calculate My Innovator Type")
+    if st.button("🚀 Calculate My Innovator Type"):
 
-    if calc:
-
-        # ----------------------------------------------
-        # STEP 1 — Normalize questionnaire scores
-        # ----------------------------------------------
         q_scores = normalize_scores(answers)
-
-        # ----------------------------------------------
-        # STEP 2 — Combine with scenario scores
-        # ----------------------------------------------
         final_scores = combine_with_scenarios(q_scores, scenario_scores)
-
-        # ----------------------------------------------
-        # STEP 3 — Determine primary archetype
-        # ----------------------------------------------
         primary_name, archetype_data = determine_archetype(final_scores, archetypes)
 
-        if primary_name is None:
-            st.error("❌ Could not determine an archetype. Check config.")
-            st.stop()
-
-        # ----------------------------------------------
-        # STEP 4 — Monte Carlo identity spectrum
-        # ----------------------------------------------
         probs, stability, shadow = monte_carlo_probabilities(final_scores, archetypes)
         shadow_name, shadow_pct = shadow
 
-        # ----------------------------------------------
-        # HERO CARD
-        # ----------------------------------------------
+        # ----------------------------------------------------
+        # RESULT CARD
+        # ----------------------------------------------------
         st.markdown(f"""
         <div class='itype-result-card'>
             <h1>{primary_name}</h1>
-            <p>{archetype_data.get("description", "")}</p>
-            <div style="margin-top: 10px;">
-                <b>Stability:</b> {stability:.1f}%  
-                <br>
-                <small>
-                    Shows how consistently your results remain <b>{primary_name}</b>
-                    across 5000 micro-variations.
-                </small>
-            </div>
+            <p>{archetype_data.get("description","")}</p>
+            <p><b>Stability:</b> {stability:.1f}%</p>
         </div>
         """, unsafe_allow_html=True)
 
-        # ----------------------------------------------
-        # TYPE BLEND
-        # ----------------------------------------------
-        st.markdown("### Your Type Blend")
-        st.markdown(f"""
-        - 🏆 **Primary archetype:** **{primary_name}**
-        - 🌘 **Shadow archetype:** **{shadow_name}** ({shadow_pct:.1f}%)
-        """)
+        # ----------------------------------------------------
+        # RADAR
+        # ----------------------------------------------------
+        st.markdown("<div class='itype-chart-box'>", unsafe_allow_html=True)
 
-        # ----------------------------------------------
-        # RADAR CHART
-        # ----------------------------------------------
-        st.markdown("### Core Innovation Dimensions")
         dims = list(final_scores.keys())
         vals = list(final_scores.values())
 
@@ -253,171 +230,99 @@ with tabs[2]:
             line_color='#00eaff'
         ))
         radar.update_layout(
-            polar=dict(radialaxis=dict(visible=True, range=[0, 100])),
+            polar=dict(radialaxis=dict(visible=True, range=[0,100])),
             paper_bgcolor='rgba(0,0,0,0)',
             showlegend=False
         )
+
         st.plotly_chart(radar, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-        # ----------------------------------------------
-        # IDENTITY SPECTRUM (bar chart)
-        # ----------------------------------------------
-        st.markdown("### Identity Spectrum — Probability Across All Archetypes")
-
+        # ----------------------------------------------------
+        # IDENTITY SPECTRUM
+        # ----------------------------------------------------
         sorted_probs = sorted(probs.items(), key=lambda x: x[1], reverse=True)
-        arche_names = [p[0] for p in sorted_probs]
-        arche_values = [p[1] for p in sorted_probs]
 
-        spectrum = go.Figure()
-        spectrum.add_trace(go.Bar(
-            x=arche_names,
-            y=arche_values,
-            marker_color='#00eaff'
+        st.markdown("<div class='itype-chart-box'>", unsafe_allow_html=True)
+
+        fig = go.Figure(go.Bar(
+            x=[p[0] for p in sorted_probs],
+            y=[p[1] for p in sorted_probs],
+            marker_color="#00eaff"
         ))
-        spectrum.update_layout(
-            paper_bgcolor='rgba(0,0,0,0)',
-            yaxis_title="Probability (%)",
+        fig.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)'
         )
-        st.plotly_chart(spectrum, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-        # ----------------------------------------------
-        # HEATMAP (CORRECTED)
-        # ----------------------------------------------
-        st.markdown("### 🔥 Identity Heatmap")
-
-        heat_archetypes = [
+        # ----------------------------------------------------
+        # HEATMAP (NEON GRID)
+        # ----------------------------------------------------
+        heat_grid = [
             ["Visionary", "Strategist", "Storyteller"],
             ["Catalyst", "Apex Innovator", "Integrator"],
             ["Engineer", "Operator", "Experimenter"]
         ]
 
-        heat_values = [
-            [probs.get(a, 0) for a in row]
-            for row in heat_archetypes
-        ]
+        heat_values = [[probs.get(a,0) for a in row] for row in heat_grid]
 
-        heat_fig = go.Figure(data=go.Heatmap(
+        st.markdown("<div class='itype-chart-box'>", unsafe_allow_html=True)
+
+        heatmap = go.Figure(data=go.Heatmap(
             z=heat_values,
-            x=heat_archetypes[0],
+            x=heat_grid[0],
             y=["Row 1", "Row 2", "Row 3"],
             colorscale="blues",
-            text=[[f"{a}: {probs.get(a,0):.1f}%" for a in row] for row in heat_archetypes],
             hoverinfo="text",
+            text=[[f"{a}: {probs.get(a,0):.1f}%" for a in row] for row in heat_grid]
         ))
 
-        heat_fig.update_layout(
+        heatmap.update_layout(
             paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
             font=dict(color="#e5f4ff"),
-            title="Archetype Probability Heatmap"
+            title="Identity Heatmap"
         )
 
-        st.plotly_chart(heat_fig, use_container_width=True)
+        st.plotly_chart(heatmap, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-        st.markdown("""
-        <p style='font-size: 0.9rem; opacity: 0.8;'>
-        The heatmap shows your identity cluster. Darker = stronger identity signal.
-        </p>
-        """, unsafe_allow_html=True)
-
-        # ----------------------------------------------
-        # DETAILED BREAKDOWN
-        # ----------------------------------------------
-        st.markdown("<hr><h2>Your Innovator Breakdown</h2>", unsafe_allow_html=True)
-
-        st.markdown("<h3>Strengths</h3>", unsafe_allow_html=True)
-        for s in archetype_data.get("strengths", []):
-            st.markdown(f"<div class='itype-strength-card'>• {s}</div>", unsafe_allow_html=True)
-
-        st.markdown("<h3 style='margin-top:20px;'>Growth Edges & Risks</h3>", unsafe_allow_html=True)
-        for r in archetype_data.get("risks", []):
-            st.markdown(f"<div class='itype-risk-card'>• {r}</div>", unsafe_allow_html=True)
-
-        st.markdown("<h3 style='margin-top:20px;'>Recommended Innovation Pathways</h3>", unsafe_allow_html=True)
-        for p in archetype_data.get("pathways", []):
-            st.markdown(f"<div class='itype-pathway-card'>• {p}</div>", unsafe_allow_html=True)
-
-        st.markdown("<h3 style='margin-top:20px;'>Suggested Business Models</h3>", unsafe_allow_html=True)
-        for bm in archetype_data.get("business_models", []):
-            st.markdown(f"<div class='itype-business-card'>• {bm}</div>", unsafe_allow_html=True)
-
-        st.markdown("<h3 style='margin-top:20px;'>Funding Strategy Fit</h3>", unsafe_allow_html=True)
-        for fs in archetype_data.get("funding_strategy", []):
-            st.markdown(f"<div class='itype-funding-card'>• {fs}</div>", unsafe_allow_html=True)
-
-        # ----------------------------------------------
-        # EXPLAINER
-        # ----------------------------------------------
-        st.markdown("<hr><h3>How to Interpret Your Results</h3>", unsafe_allow_html=True)
-        st.markdown("""
-        - **Stability %** — how consistent your identity is across 5000 simulations.  
-        - **Shadow archetype** — second-strongest identity.  
-        - **Identity spectrum** — distribution across all archetypes.  
-        - **Heatmap** — identity clustering across 3×3 matrix.  
-        - **Radar chart** — your core cognitive–behavioural innovation traits.
-        """)
 
 # ============================================================
 # TAB 4 — DEVELOPER SIMULATION
 # ============================================================
 
-with tabs[3]:
-    st.markdown("## 🛠 Developer Simulation — 5000 Random Profiles")
-    st.caption("Use this to test archetype distributions and engine behaviour.")
+with tab_dev:
 
-    run_sim = st.button("Run 5000 Simulation")
+    st.markdown("<div class='dev-box'>", unsafe_allow_html=True)
 
-    if run_sim:
+    st.write("Run random simulations to test archetype distributions.")
+
+    if st.button("Run 5000 Simulation"):
         import random
+        counts = {k: 0 for k in archetypes}
 
-        # Prepare counters
-        sim_counts = {name: 0 for name in archetypes}
-
-        # Run simulation
         for _ in range(5000):
-            random_profile = {
-                "thinking": random.uniform(0, 100),
-                "execution": random.uniform(0, 100),
-                "risk": random.uniform(0, 100),
-                "motivation": random.uniform(0, 100),
-                "team": random.uniform(0, 100),
-                "commercial": random.uniform(0, 100),
+            random_scores = {
+                "thinking": random.uniform(0,100),
+                "execution": random.uniform(0,100),
+                "risk": random.uniform(0,100),
+                "motivation": random.uniform(0,100),
+                "team": random.uniform(0,100),
+                "commercial": random.uniform(0,100),
             }
-            name, _ = determine_archetype(random_profile, archetypes)
-            sim_counts[name] += 1
+            name, _ = determine_archetype(random_scores, archetypes)
+            counts[name] += 1
 
-        # Convert to percentage
-        sim_percent = {
-            k: v / 5000 * 100
-            for k, v in sim_counts.items()
-        }
+        sim_percent = {k: counts[k] / 5000 * 100 for k in counts}
 
-        st.subheader("Archetype Distribution")
         st.write(sim_percent)
 
-        # Bar chart
-        sim_names = list(sim_percent.keys())
-        sim_values = list(sim_percent.values())
-
-        fig = go.Figure()
-        fig.add_trace(go.Bar(
-            x=sim_names,
-            y=sim_values,
+        fig = go.Figure(go.Bar(
+            x=list(sim_percent.keys()),
+            y=list(sim_percent.values()),
             marker_color="#00eaff"
         ))
-
-        fig.update_layout(
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='#e5f4ff'),
-            yaxis_title="Percentage of simulations (%)",
-        )
-
         st.plotly_chart(fig, use_container_width=True)
 
-        st.markdown("""
-        <small>
-        This simulation uses fully random profiles (0–100 per dimension)  
-        to test how naturally each archetype appears when no bias exists.
-        </small>
-        """, unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
