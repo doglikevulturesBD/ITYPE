@@ -427,7 +427,7 @@ if st.session_state.get("has_results") and archetypes:
     st.markdown("<hr class='hr-neon'>", unsafe_allow_html=True)
     st.markdown("<h2 style='text-align:center;'>Explore All Archetypes</h2>", unsafe_allow_html=True)
     st.markdown(
-        "<p style='opacity:0.85; text-align:center;'>Click a tile to reveal its profile.</p>",
+    "<p style='opacity:0.85; text-align:center;'>Click a tile to reveal its profile.</p>",
         unsafe_allow_html=True,
     )
 
@@ -447,12 +447,12 @@ if st.session_state.get("has_results") and archetypes:
 
             # Beautiful neon tile button
             tile_clicked = st.button(
-                f"""
-                <div class='arch-tile-wrapper'>
-                <img src='{img_path}' class='arch-img'>
-                <div class='arch-title'>{name}</div>
-                </div>
-                """,
+            f"""
+            <div class='arch-tile-wrapper'>
+            <img src='{img_path}' class='arch-img'>
+            <div class='arch-title'>{name}</div>
+            </div>
+            """,
                 key=f"arch_tile_{name}",
                 use_container_width=True
             )
