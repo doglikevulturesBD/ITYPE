@@ -55,12 +55,12 @@ scenarios = load_json("data/scenarios.json", default=[])
 st.markdown("""
 <div class="hero-wrapper">
 <div class="hero">
-    <div class="hero-glow"></div>
-    <div class="hero-particles"></div>
-    <div class="hero-content">
-        <h1 class="hero-title">I-TYPE — Innovator Type Assessment</h1>
-        <p class="hero-sub">Powered by the Innovator DNA Index™</p>
-    </div>
+<div class="hero-glow"></div>
+<div class="hero-particles"></div>
+<div class="hero-content">
+<h1 class="hero-title">I-TYPE — Innovator Type Assessment</h1>
+<p class="hero-sub">Powered by the Innovator DNA Index™</p>
+</div>
 </div>
 </div>
 """, unsafe_allow_html=True)
@@ -180,7 +180,7 @@ with tab_scenario:
 
     if st.button("📊 See Results"):
         st.session_state["active_tab"] = "results"
-        st.experimental_rerun()
+        st.rerun()
 
 
 # ============================================================
