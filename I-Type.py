@@ -276,6 +276,55 @@ with tabs[2]:
                 </p>
                 """, unsafe_allow_html=True)
 
+
+                # ============================================================
+# IDENTITY HEATMAP (VERSION 1)
+# ============================================================
+st.markdown("### 🔥 Identity Heatmap")
+
+# Create a 3×3 heatmap grid of archetypes in a stable order
+heat_archetypes = [
+    ["Visionary",     "Strategist",      "Storyteller"],
+    ["Catalyst",      "Apex Innovator",  "Integrator"],
+    ["Engineer",      "Operator",        "Experimenter"]
+]
+
+# Build a matrix of probabilities in the same shape
+heat_values = [
+    [probs.get(a, 0) for a in row]
+    for row in heat_archetypes
+]
+
+heat_fig = go.Figure(data=go.Heatmap(
+    z=heat_values,
+    x=heat_archetypes[0],
+    y=["Row 1", "Row 2", "Row 3"],
+    colorscale="blues",
+    hoverongaps=False,
+    text=[[f"{a}: {probs.get(a,0):.1f}%" for a in row] for row in heat_archetypes],
+    hoverinfo="text",
+))
+
+heat_fig.update_layout(
+    title="Archetype Probability Heatmap",
+    xaxis=dict(title="Archetypes"),
+    yaxis=dict(showticklabels=False),
+    paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="rgba(0,0,0,0)",
+    font=dict(color="#e5f4ff")
+)
+
+st.plotly_chart(heat_fig, use_container_width=True)
+
+st.markdown("""
+<p style='font-size: 0.9rem; opacity: 0.8;'>
+The heatmap shows a visual distribution of your probabilities across all 9 archetypes.
+Darker colours indicate higher likelihood clusters.
+This helps you understand whether your identity is concentrated or spread across styles.
+</p>
+""", unsafe_allow_html=True)
+
+
                 # ------------------------------------------------
                 # STEP 6 — DETAILED BREAKDOWN FOR PRIMARY ARCHETYPE
                 # ------------------------------------------------
