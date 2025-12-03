@@ -400,3 +400,81 @@ elif step == 3:
                     del st.session_state[key]
             st.session_state["step"] = 1
             st.rerun()
+
+# ============================================================
+# ARCHETYPE LIBRARY — GLOWING TILE BROWSER
+# ============================================================
+
+st.markdown("<hr><h2>Explore All Archetypes</h2>", unsafe_allow_html=True)
+st.markdown("""
+<p style='opacity:0.85; margin-bottom:20px;'>
+Click any archetype tile to read its strengths, risks, pathways, and strategy fit.
+</p>
+""", unsafe_allow_html=True)
+
+# Track tile clicks
+if "open_archetype" not in st.session_state:
+    st.session_state["open_archetype"] = None
+
+# Tile Grid
+st.markdown("<div class='archetype-grid'>", unsafe_allow_html=True)
+
+for name, data in archetypes.items():
+
+    # Create unique key for tile
+    tile_key = f"tile_{name}"
+
+    # Render tile
+    clicked = st.button(
+        name,
+        key=tile_key,
+        help=f"Open details for {name}"
+    )
+
+    # If clicked, set active panel
+    if clicked:
+        if st.session_state["open_archetype"] == name:
+            st.session_state["open_archetype"] = None  # close
+        else:
+            st.session_state["open_archetype"] = name  # open
+
+st.markdown("</div>", unsafe_allow_html=True)
+
+# Show expanded panel
+if st.session_state["open_archetype"]:
+    a = st.session_state["open_archetype"]
+    info = archetypes[a]
+
+    st.markdown(f"""
+    <div class='archetype-panel'>
+        <h2 style="text-align:center; margin-bottom:10px;">
+            {a}
+        </h2>
+        <p style="opacity:0.85;">{info.get("description","")}</p>
+
+        <h4>Strengths</h4>
+        <ul>
+            {''.join([f'<li>{s}</li>' for s in info.get("strengths",[])])}
+        </ul>
+
+        <h4>Risks & Growth Edges</h4>
+        <ul>
+            {''.join([f'<li>{r}</li>' for r in info.get("risks",[])])}
+        </ul>
+
+        <h4>Recommended Pathways</h4>
+        <ul>
+            {''.join([f'<li>{p}</li>' for p in info.get("pathways",[])])}
+        </ul>
+
+        <h4>Business Model Fit</h4>
+        <ul>
+            {''.join([f'<li>{bm}</li>' for bm in info.get("business_models",[])])}
+        </ul>
+
+        <h4>Funding Strategy Fit</h4>
+        <ul>
+            {''.join([f'<li>{fs}</li>' for fs in info.get("funding_strategy",[])])}
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
