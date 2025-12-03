@@ -187,7 +187,7 @@ if step == 1:
 
 # ============================================================
 # ============================================================
-# STEP 2 — SCENARIOS (Improved UX with Tiles)
+# STEP 2 — SCENARIOS (Perfectly Integrated Tile UI)
 # ============================================================
 
 elif step == 2:
@@ -201,30 +201,32 @@ elif step == 2:
             desc = sc.get("description", "No description provided.")
             options = sc.get("options", [])
 
-            # ----------------------------------------------
-            # Beautiful Scenario Tile
-            # ----------------------------------------------
-            st.markdown(f"""
-            <div class='itype-question-card' style='margin-top: 25px;'>
-            <h3 style='font-size: 1.4rem; margin-bottom: 6px;'>{title}</h3>
-            <p style='opacity: 0.85; margin-bottom: 18px;'>{desc}</p>
+            # Create a container to host both HTML + selectbox
+            scenario_container = st.container()
 
-            <div class='scenario-answer-box'>
-            <label style='font-weight: 600; font-size: 1rem;'>
-                     Select your response:
-            </label>
-            </div>
-            </div>
-            """, unsafe_allow_html=True)
+            with scenario_container:
+                # ---- TILE HEADER HTML ----
+                st.markdown(f"""
+                <div class='itype-question-card' style='padding-bottom: 5px;'>
+                <h3 style='font-size: 1.3rem; margin-bottom: 6px;'>{title}</h3>
+                <p style='opacity: 0.85; margin-bottom: 18px;'>{desc}</p>
+                </div>
+                """, unsafe_allow_html=True)
 
-            # The actual selectbox directly below the tile
-            st.selectbox(
-                "",
-                options,
-                key=f"sc_{i}",
-            )
+                # ---- SELECT INPUT INSIDE THE SAME TILE ----
+                st.markdown("<div class='scenario-select-wrapper'>", unsafe_allow_html=True)
 
-        st.markdown("<br>", unsafe_allow_html=True)
+                st.selectbox(
+                    "Select your response:",
+                    options,
+                    key=f"scenario_{i}",
+                    label_visibility="visible",
+                )
+
+                st.markdown("</div>", unsafe_allow_html=True)
+
+                # Add spacing between tiles
+                st.markdown("<br>", unsafe_allow_html=True)
 
     # Navigation
     col1, col2, col3 = st.columns([1, 1, 1])
@@ -235,11 +237,9 @@ elif step == 2:
             st.rerun()
 
     with col3:
-        if st.button("Next ➜ See Results"):
+        if st.button("Next ➜ Results"):
             st.session_state["step"] = 3
             st.rerun()
-
-
 
 # ============================================================
 # STEP 3 — RESULTS
