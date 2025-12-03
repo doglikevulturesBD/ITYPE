@@ -37,8 +37,8 @@ scenarios = load_json("data/scenarios.json")
 
 st.markdown("""
 <div class='itype-container'>
-    <h1>I-TYPE — Innovator Type Assessment</h1>
-    <p class='subtitle'>Powered by the Innovator DNA Index™</p>
+<h1>I-TYPE — Innovator Type Assessment</h1>
+<p class='subtitle'>Powered by the Innovator DNA Index™</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -56,7 +56,7 @@ with tabs[0]:
     for i, q in enumerate(questions):
         st.markdown(f"""
         <div class='itype-question-card'>
-            <h3>{q["question"]}</h3>
+        <h3>{q["question"]}</h3>
         </div>
         """, unsafe_allow_html=True)
 
@@ -85,8 +85,8 @@ with tabs[1]:
     for i, sc in enumerate(scenarios):
         st.markdown(f"""
         <div class='itype-scenario-card'>
-            <h3>{sc['title']}</h3>
-            <p>{sc['description']}</p>
+        <h3>{sc['title']}</h3>
+        <p>{sc['description']}</p>
         </div>
         """, unsafe_allow_html=True)
 
