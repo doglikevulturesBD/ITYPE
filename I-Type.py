@@ -201,6 +201,14 @@ elif step == 2:
 # ============================================================
 # STEP 3 — RESULTS
 # ============================================================
+# Makes HTML divs clickable using Streamlit events
+st.markdown("""
+<script>
+function sendClick(name) {
+    window.parent.postMessage({ "clicked_archetype": name }, "*");
+}
+</script>
+""", unsafe_allow_html=True)
 
 elif step == 3:
 
@@ -337,6 +345,15 @@ if "has_results" in st.session_state and st.session_state["has_results"]:
     # Track open archetype
     if "open_archetype" not in st.session_state:
         st.session_state["open_archetype"] = None
+
+    clicked_key = st.session_state.get("clicked_archetype_js")
+
+# Capture JS message
+clicked_raw = st.experimental_get_query_params().get("clicked_archetype", [None])[0]
+
+if clicked_raw:
+    st.session_state["open_archetype"] = clicked_raw
+    clicked_key = clicked_raw
 
     # 3×3 GRID
     cols = st.columns(3)
