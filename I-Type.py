@@ -60,8 +60,8 @@ if "use_scenarios" not in st.session_state:
 
 st.markdown("""
 <div class='itype-container'>
-    <h1>I-TYPE — Innovator Type Assessment</h1>
-    <p class='subtitle'>Powered by IDIX — Innovator DNA Index™</p>
+<h1>I-TYPE — Innovator Type Assessment</h1>
+<p class='subtitle'>Powered by IDIX — Innovator DNA Index™</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -79,7 +79,7 @@ step_labels = {
 
 st.markdown(f"""
 <div class='itype-container'>
-    <p style='text-align:center; opacity:0.85;'>{step_labels[st.session_state.step]}</p>
+<p style='text-align:center; opacity:0.85;'>{step_labels[st.session_state.step]}</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -96,7 +96,7 @@ if st.session_state.step == 1:
     for i, q in enumerate(questions_data):
         st.markdown(f"""
             <div class='itype-question-card'>
-                <h3>{q['question']}</h3>
+            <h3>{q['question']}</h3>
             </div>
         """, unsafe_allow_html=True)
 
@@ -138,7 +138,7 @@ elif st.session_state.step == 2:
     for s in scenarios_data:
         st.markdown(f"""
         <div class='itype-question-card'>
-            <h3>{s['scenario']}</h3>
+        <h3>{s['scenario']}</h3>
         </div>
         """, unsafe_allow_html=True)
 
@@ -195,10 +195,10 @@ elif st.session_state.step == 3:
         # Header
         st.markdown(f"""
             <div class='itype-result-card'>
-                <h1 class='itype-result-title'>{archetype_name}</h1>
-                <p style='text-align:center; opacity:0.85;'>
-                    {archetype_data['description']}
-                </p>
+            <h1 class='itype-result-title'>{archetype_name}</h1>
+            <p style='text-align:center; opacity:0.85;'>
+                {archetype_data['description']}
+            </p>
             </div>
         """, unsafe_allow_html=True)
 
@@ -235,14 +235,14 @@ elif st.session_state.step == 3:
         for s in archetype_data.get("strengths", []):
             st.markdown(f"""
             <div class='itype-strength-card'>
-                <strong>• {s}</strong>
+            <strong>• {s}</strong>
             </div>
             """, unsafe_allow_html=True)
 
         for r in archetype_data.get("risks", []):
             st.markdown(f"""
             <div class='itype-risk-card'>
-                <strong>• {r}</strong>
+            <strong>• {r}</strong>
             </div>
             """, unsafe_allow_html=True)
 
