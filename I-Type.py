@@ -1,211 +1,166 @@
 import streamlit as st
 import json
-import os
-import plotly.graph_objects as go
-from idix_engine import calculate_idix_scores, determine_archetype
+from idix_engine import compute_idix
 
 # ============================================================
-# PATHING (Bulletproof fix for JSONDecodeError)
+# CSS LOADING
 # ============================================================
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-def load_json(filename):
-    path = os.path.join(BASE_DIR, "data", filename)
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-# Load data
-questions_data = load_json("questions.json")
-archetypes_data = load_json("archetypes.json")
-scenarios_data = load_json("scenarios.json")
-
-# ============================================================
-# Load CSS
-# ============================================================
 def load_css():
-    path = os.path.join(BASE_DIR, "assets", "styles.css")
-    with open(path) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    try:
+        with open("assets/styles.css") as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    except:
+        pass
 
 load_css()
 
 # ============================================================
+# LOAD DATA
+# ============================================================
+
+def load_json(path):
+    with open(path, "r") as f:
+        return json.load(f)
+
+questions_data = load_json("data/questions.json")
+archetypes_data = load_json("data/archetypes.json")
+scenarios_data = load_json("data/scenarios.json")
+
+# ============================================================
 # PAGE HEADER
 # ============================================================
+
 st.markdown("""
 <div class='itype-container'>
-<h1>I-TYPE — Innovator Type Assessment</h1>
-<p class='subtitle'>Powered by the IDIX™ — Innovator DNA Index</p>
+    <h1>I-TYPE — Innovator Type Assessment</h1>
+    <p class='subtitle'>Powered by <strong>IDIX — Innovator DNA Index™</strong></p>
 </div>
 """, unsafe_allow_html=True)
 
 st.write("")
 
 # ============================================================
-# TAB SETUP
+# QUESTIONNAIRE
 # ============================================================
-tab1, tab2, tab3 = st.tabs(["📘 Questionnaire", "🎭 Scenarios", "📊 Results"])
 
-# ============================================================
-# TAB 1 — QUESTIONNAIRE
-# ============================================================
-with tab1:
-    st.markdown("<h2 class='itype-title'>Innovation Profile Questionnaire</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align:center;'>Innovation Profile Questionnaire</h2>", unsafe_allow_html=True)
+st.write("")
 
-    q_answers = {}
+answers = {}
 
-    for i, q in enumerate(questions_data):
+for i, q in enumerate(questions_data):
 
-        # --- Card wrapper ---
-        st.markdown(f"""
+    # question card
+    st.markdown(f"""
         <div class='itype-question-card'>
-        <h3>{q['question']}</h3>
+            <h3>{q['question']}</h3>
         </div>
-        """, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-        # --- Brand-colour slider labels ---
-        cols = st.columns([1, 6, 1])
+    # slider description tooltip
+    low_label = q.get("low_label", "Low")
+    high_label = q.get("high_label", "High")
 
-        with cols[0]:
-            st.markdown(
-                "<div style='text-align:center; color:#00eaff; opacity:0.85;'>"
-                "1<br><small>Disagree</small></div>",
-                unsafe_allow_html=True
-            )
+    with st.container():
+        c1, c2 = st.columns([0.2, 0.8])
+        with c1:
+            st.markdown(f"<p style='opacity:0.6; font-size:0.85rem'>{low_label}</p>", unsafe_allow_html=True)
+        with c2:
+            st.markdown(f"<p style='text-align:right; opacity:0.6; font-size:0.85rem'>{high_label}</p>", unsafe_allow_html=True)
 
-        with cols[1]:
-            answer = st.slider(
-                label="",
-                min_value=1,
-                max_value=5,
-                value=3,
-                key=f"q{i}",
-                help="1 = Disagree · 5 = Agree"
-            )
+    answer = st.slider(
+        label="",
+        min_value=1,
+        max_value=5,
+        value=3,
+        key=f"q{i}",
+        help=f"{low_label} ← slider → {high_label}",
+    )
 
-        with cols[2]:
-            st.markdown(
-            "<div style='text-align:center; color:#ff4bf1; opacity:0.85;'>"
-            "5<br><small>Agree</small></div>",
-                unsafe_allow_html=True
-            )
+    answers[q["question"]] = {
+        "value": answer,
+        "dimension": q["dimension"],
+        "reverse": q.get("reverse", False)
+    }
 
-        q_answers[q["id"]] = {
-            "value": answer,
-            "dimension": q["dimension"],
-            "reverse": q["reverse"]
-        }
+st.write("")
+submitted = st.button("Submit Assessment", use_container_width=True)
 
 # ============================================================
-# TAB 2 — SCENARIOS
+# RESULTS
 # ============================================================
-with tab2:
-    st.markdown("<h2 class='itype-title'>Scenario-Based Behaviour Assessment</h2>", unsafe_allow_html=True)
 
-    scenario_answers = {}
+if submitted:
+    st.markdown("<div class='itype-container'>", unsafe_allow_html=True)
 
-    for s in scenarios_data:
-        st.markdown(f"""
-        <div class='itype-question-card'>
-        <h3>{s['scenario']}</h3>
-        </div>
-        """, unsafe_allow_html=True)
+    # Compute IDIX results
+    final_scores, (primary_name, primary_data), (shadow_name, shadow_data) = compute_idix(
+        answers,
+        scenario_responses=None,
+        scenario_weights=None,
+        archetypes=archetypes_data
+    )
 
-        options = [opt["text"] for opt in s["options"]]
+    # ------------------------------
+    # PRIMARY ARCHETYPE CARD
+    # ------------------------------
 
-        choice = st.radio(
-            label="Choose your response:",
-            options=options,
-            key=f"sc{s['id']}"
-        )
-
-        for opt in s["options"]:
-            if opt["text"] == choice:
-                scenario_answers[s["id"]] = opt["dimension"]
-
-# ============================================================
-# TAB 3 — RESULTS
-# ============================================================
-with tab3:
-    st.markdown("<h2 class='itype-title'>Your Results</h2>", unsafe_allow_html=True)
-
-    submitted = st.button("Calculate My Innovator Type", use_container_width=True)
-
-    if submitted:
-
-        # ==============================================
-        # 1. CALCULATE BASE SCORES
-        # ==============================================
-        base_scores = calculate_idix_scores(q_answers)
-
-        # ==============================================
-        # 2. APPLY SCENARIO BOOST
-        # ==============================================
-        scenario_boost = 3
-        scenario_scores = {dim: 0 for dim in base_scores}
-
-        for sc_id, dim in scenario_answers.items():
-            scenario_scores[dim] += scenario_boost
-
-        final_scores = {
-            dim: min(100, base_scores[dim] + scenario_scores[dim])
-            for dim in base_scores
-        }
-
-        # ==============================================
-        # 3. DETERMINE ARCHETYPE
-        # ==============================================
-        archetype_name, archetype_data = determine_archetype(final_scores, archetypes_data)
-
-        # ============================================================
-        # DISPLAY ARCHETYPE CARD
-        # ============================================================
-        st.markdown(f"""
+    st.markdown(f"""
         <div class='itype-result-card'>
-        <h1 class='itype-result-title'>{archetype_name}</h1>
-        <p style='text-align:center; opacity:0.85;'>{archetype_data['description']}</p>
+            <h1 class='itype-result-title'>{primary_name}</h1>
+            <p style='text-align:center; opacity:0.85;'>{primary_data["description"]}</p>
+    """, unsafe_allow_html=True)
+
+    # ------------------------------
+    # SHADOW ARCHETYPE
+    # ------------------------------
+
+    st.markdown("""
+        <hr style='margin:25px 0; opacity:0.25;'>
+    """, unsafe_allow_html=True)
+
+    st.markdown(f"""
+        <h3 style='text-align:center;'>Shadow Archetype: {shadow_name}</h3>
+        <p style='text-align:center; opacity:0.65;'>
+            {shadow_data.get("description", "A secondary innovation tendency that shapes your approach.")}
+        </p>
+    """, unsafe_allow_html=True)
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # ============================================================
+    # STRENGTHS & RISKS GRID
+    # ============================================================
+
+    st.markdown("<h3 style='margin-top:25px;'>Strengths & Growth Areas</h3>", unsafe_allow_html=True)
+    st.markdown("<div class='itype-result-grid'>", unsafe_allow_html=True)
+
+    # Strengths
+    for s in primary_data.get("strengths", []):
+        st.markdown(f"""
+        <div class='itype-strength-card'>
+            <strong>• {s}</strong>
         </div>
         """, unsafe_allow_html=True)
 
-        # ============================================================
-        # RADAR CHART
-        # ============================================================
-        dims = list(final_scores.keys())
-        vals = list(final_scores.values())
+    # Risks
+    for r in primary_data.get("risks", []):
+        st.markdown(f"""
+        <div class='itype-risk-card'>
+            <strong>• {r}</strong>
+        </div>
+        """, unsafe_allow_html=True)
 
-        fig = go.Figure()
-        fig.add_trace(go.Scatterpolar(
-            r=vals + [vals[0]],
-            theta=dims + [dims[0]],
-            fill='toself',
-            line_color='#00eaff'
-        ))
+    st.markdown("</div>", unsafe_allow_html=True)
 
-        fig.update_layout(
-            polar=dict(
-                bgcolor="rgba(10,14,25,0.55)",
-                radialaxis=dict(visible=True, range=[0, 100])
-            ),
-            paper_bgcolor='rgba(0,0,0,0)',
-            font=dict(color='#e5f4ff'),
-            showlegend=False
-        )
+    # ============================================================
+    # SCORE BREAKDOWN
+    # ============================================================
 
-        st.plotly_chart(fig, use_container_width=True)
+    st.markdown("<h3 style='margin-top:35px;'>Your Innovation DNA (Score Breakdown)</h3>", unsafe_allow_html=True)
 
-        # ============================================================
-        # STRENGTHS + RISKS
-        # ============================================================
-        st.markdown("<h3>Strengths & Growth Areas</h3>", unsafe_allow_html=True)
-        st.markdown("<div class='itype-result-grid'>", unsafe_allow_html=True)
+    score_table = {dim: round(val, 1) for dim, val in final_scores.items()}
+    st.table(score_table)
 
-        for s in archetype_data["strengths"]:
-            st.markdown(f"<div class='itype-strength-card'>• {s}</div>", unsafe_allow_html=True)
-
-        for r in archetype_data["risks"]:
-            st.markdown(f"<div class='itype-risk-card'>• {r}</div>", unsafe_allow_html=True)
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-
-        st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
