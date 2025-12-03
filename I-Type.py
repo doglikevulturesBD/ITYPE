@@ -16,6 +16,9 @@ from idix_engine import (
 if "step" not in st.session_state:
     st.session_state["step"] = 1  # 1 = Questions, 2 = Scenarios, 3 = Results
 
+if "has_results" not in st.session_state:
+    st.session_state["has_results"] = False
+
 if "open_archetype" not in st.session_state:
     st.session_state["open_archetype"] = None
 
@@ -35,44 +38,47 @@ load_css()
 
 
 # ============================================================
-# LOAD JSON
+# LOAD JSON HELPERS
 # ============================================================
 
 def load_json(path, default=None):
     try:
         with open(path, "r") as f:
             return json.load(f)
-    except:
+    except Exception as e:
+        st.error(f"Error loading {path}: {e}")
         return default
 
-questions = load_json("data/questions.json", [])
-archetypes = load_json("data/archetypes.json", {})
-scenarios = load_json("data/scenarios.json", [])
+questions = load_json("data/questions.json", default=[])
+archetypes = load_json("data/archetypes.json", default={})
+scenarios = load_json("data/scenarios.json", default=[])
 
 
 # ============================================================
-# HERO
+# HERO SECTION
 # ============================================================
 
 st.markdown("""
 <div class="hero-wrapper">
-<div class="hero">
-<div class="hero-glow"></div>
-<div class="hero-particles"></div>
-<div class="hero-content">
-<h1 class="hero-title">I-TYPE — Innovator Type Assessment</h1>
-<p class="hero-sub">Powered by the Innovator DNA Index™</p>
-</div>
-</div>
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-particles"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">I-TYPE — Innovator Type Assessment</h1>
+      <p class="hero-sub">Powered by the Innovator DNA Index™</p>
+    </div>
+  </div>
 </div>
 """, unsafe_allow_html=True)
 
 
 # ============================================================
-# STEP BAR
+# STEP PROGRESS BAR
 # ============================================================
 
 step = st.session_state["step"]
+total_steps = 3
+
 step_labels = {
     1: "Step 1 of 3 — Innovation Profile Questionnaire",
     2: "Step 2 of 3 — Scenario-Based Assessment",
@@ -80,37 +86,57 @@ step_labels = {
 }
 
 st.markdown(f"### {step_labels[step]}")
-st.progress(step / 3)
+st.progress(step / total_steps)
 
 
 # ============================================================
-# HELPERS
+# HELPERS TO RECONSTRUCT ANSWERS & SCENARIOS FROM STATE
 # ============================================================
 
-def get_answers_from_state(questions):
+def get_answers_from_state(questions_list):
+    """Rebuilds the `answers` dict from stored slider values in session_state."""
     answers = {}
-    for i, q in enumerate(questions):
-        answers[q["question"]] = {
-            "value": st.session_state.get(f"q{i}", 3),
-            "dimension": q["dimension"],
-            "reverse": q["reverse"]
+    for i, q in enumerate(questions_list):
+        text = q.get("question", f"Question {i+1}")
+        dim = q.get("dimension", "thinking")
+        reverse = q.get("reverse", False)
+        val = st.session_state.get(f"q{i}", 3)
+        answers[text] = {
+            "value": val,
+            "dimension": dim,
+            "reverse": reverse,
         }
     return answers
 
 
-def get_scenario_scores_from_state(scenarios):
-    accum = {k: 0 for k in ["thinking","execution","risk","motivation","team","commercial"]}
+def get_scenario_scores_from_state(scenarios_list):
+    """Uses stored selectbox choices to compute scenario_scores across dimensions."""
+    accum = {
+        "thinking": 0,
+        "execution": 0,
+        "risk": 0,
+        "motivation": 0,
+        "team": 0,
+        "commercial": 0,
+    }
     count = 0
 
-    for i, sc in enumerate(scenarios):
-        choice = st.session_state.get(f"sc_{i}")
+    for i, sc in enumerate(scenarios_list):
         mapping = sc.get("mapping", {})
-        if choice in mapping:
-            for k in accum:
-                accum[k] += mapping[choice].get(k, 0)
-            count += 1
+        choice = st.session_state.get(f"sc_{i}")
 
-    return {k: accum[k] / count for k in accum} if count else accum
+        if choice is None or choice not in mapping:
+            continue
+
+        vec = mapping.get(choice, {})
+        for k in accum:
+            accum[k] += vec.get(k, 0)
+        count += 1
+
+    if count == 0:
+        return accum.copy()
+
+    return {k: accum[k] / count for k in accum}
 
 
 # ============================================================
@@ -119,30 +145,39 @@ def get_scenario_scores_from_state(scenarios):
 
 if step == 1:
 
-    for i, q in enumerate(questions):
+    if not questions:
+        st.error("❌ No questions found. Check data/questions.json.")
+    else:
+        for i, q in enumerate(questions):
+            text = q.get("question", f"Question {i+1}")
 
-        st.markdown(f"""
-        <div class='itype-question-card'>
-            <h3>{q['question']}</h3>
-        </div>
-        """, unsafe_allow_html=True)
+            st.markdown(f"""
+            <div class='itype-question-card'>
+                <h3>{text}</h3>
+            </div>
+            """, unsafe_allow_html=True)
 
-        st.slider(
-            label="",
-            min_value=1, max_value=5,
-            value=st.session_state.get(f"q{i}", 3),
-            key=f"q{i}"
-        )
+            st.slider(
+                label="",
+                min_value=1,
+                max_value=5,
+                value=st.session_state.get(f"q{i}", 3),
+                key=f"q{i}"
+            )
 
     st.markdown("<br>", unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
+
+    col1, col2 = st.columns([1, 1])
 
     with col1:
         if st.button("Reset"):
-            for k in list(st.session_state.keys()):
-                if k.startswith("q") or k.startswith("sc_"):
-                    del st.session_state[k]
+            # Clear all answers & scenarios
+            for key in list(st.session_state.keys()):
+                if key.startswith("q") or key.startswith("sc_"):
+                    del st.session_state[key]
             st.session_state["step"] = 1
+            st.session_state["has_results"] = False
+            st.session_state["open_archetype"] = None
             st.rerun()
 
     with col2:
@@ -159,36 +194,38 @@ elif step == 2:
 
     st.markdown("<h2>Scenario-Based Assessment</h2>", unsafe_allow_html=True)
 
-    for i, sc in enumerate(scenarios):
+    if not scenarios:
+        st.error("❌ No scenarios found. Check data/scenarios.json.")
+    else:
+        for i, sc in enumerate(scenarios):
+            title = sc.get("title", f"Scenario {i+1}")
+            desc = sc.get("description", "No description provided.")
+            options = sc.get("options", [])
 
-        title = sc["title"]
-        desc = sc["description"]
-        options = sc["options"]
+            # Card + attached selectbox block
+            st.markdown(f"""
+            <div class="scenario-card">
+                <h3>{title}</h3>
+                <p>{desc}</p>
+            </div>
+            """, unsafe_allow_html=True)
 
-        # unified tile
-        st.markdown(f"""
-        <div class="scenario-card">
-            <h3>{title}</h3>
-            <p>{desc}</p>
-        </div>
-        """, unsafe_allow_html=True)
+            st.markdown("<div class='scenario-selectbox'>", unsafe_allow_html=True)
 
-        st.markdown("<div class='scenario-selectbox'>", unsafe_allow_html=True)
+            st.selectbox(
+                label="Your response:",
+                options=options,
+                key=f"sc_{i}",
+                label_visibility="collapsed"
+            )
 
-        st.selectbox(
-            "Your response:",
-            options,
-            key=f"sc_{i}",
-            label_visibility="collapsed"
-        )
+            st.markdown("</div>", unsafe_allow_html=True)
+            st.markdown("<div class='scenario-spacer'></div>", unsafe_allow_html=True)
 
-        st.markdown("</div>", unsafe_allow_html=True)
-        st.markdown("<div class='scenario-spacer'></div>", unsafe_allow_html=True)
-
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns([1, 1, 1])
 
     with col1:
-        if st.button("⬅ Back"):
+        if st.button("⬅ Back to Questions"):
             st.session_state["step"] = 1
             st.rerun()
 
@@ -201,223 +238,240 @@ elif step == 2:
 # ============================================================
 # STEP 3 — RESULTS
 # ============================================================
-# Makes HTML divs clickable using Streamlit events
-st.markdown("""
-<script>
-function sendClick(name) {
-    window.parent.postMessage({ "clicked_archetype": name }, "*");
-}
-</script>
-""", unsafe_allow_html=True)
 
 elif step == 3:
 
-    answers = get_answers_from_state(questions)
-    scenario_scores = get_scenario_scores_from_state(scenarios)
+    if not questions or not archetypes:
+        st.error("❌ Missing questions or archetypes configuration.")
+    else:
+        answers = get_answers_from_state(questions)
+        scenario_scores = get_scenario_scores_from_state(scenarios)
 
-    if st.button("🚀 Calculate My Innovator Type"):
-        
-        q_scores = normalize_scores(answers)
-        final_scores = combine_with_scenarios(q_scores, scenario_scores)
+        calc = st.button("🚀 Calculate My Innovator Type")
 
-        primary, data = determine_archetype(final_scores, archetypes)
-        probs, stability, shadow = monte_carlo_probabilities(final_scores, archetypes)
-        shadow_name, shadow_pct = shadow
-        st.session_state["has_results"] = True
+        if calc:
+            st.session_state["has_results"] = True
+            st.session_state["open_archetype"] = None  # reset open tile
 
+            # Step 1: questionnaire scores
+            q_scores = normalize_scores(answers)
 
-        # HERO CARD
-        st.markdown(f"""
-        <div class='itype-result-card'>
-        <h1>{primary}</h1>
-        <p>{data['description']}</p>
-        <p><b>Stability:</b> {stability:.1f}%</p>
-        <p><b>Shadow:</b> {shadow_name} ({shadow_pct:.1f}%)</p>
-        </div>
-        """, unsafe_allow_html=True)
+            # Step 2: combine with scenarios
+            final_scores = combine_with_scenarios(q_scores, scenario_scores)
 
+            # Step 3: determine primary archetype
+            primary_name, archetype_data = determine_archetype(final_scores, archetypes)
 
-        # RADAR CHART
-        dims = list(final_scores.keys())
-        vals = list(final_scores.values())
+            if primary_name is None or archetype_data is None:
+                st.error("❌ Could not determine an archetype. Check configuration.")
+            else:
+                # Step 4: Monte Carlo identity spectrum
+                probs, stability, shadow = monte_carlo_probabilities(final_scores, archetypes)
+                shadow_name, shadow_pct = shadow
 
-        radar = go.Figure()
-        radar.add_trace(go.Scatterpolar(
-            r=vals + [vals[0]],
-            theta=dims + [dims[0]],
-            fill='toself',
-            line_color="#00eaff"
-        ))
-        radar.update_layout(
-            polar=dict(radialaxis=dict(visible=True, range=[0,100])),
-            paper_bgcolor="rgba(0,0,0,0)",
-            showlegend=False
-        )
-        st.plotly_chart(radar, use_container_width=True)
+                # ----------------------------------------------
+                # HERO CARD
+                # ----------------------------------------------
+                st.markdown(f"""
+                <div class='itype-result-card'>
+                    <h1>{primary_name}</h1>
+                    <p>{archetype_data.get("description","")}</p>
+                    <p><b>Stability:</b> {stability:.1f}%</p>
+                    <p><b>Shadow archetype:</b> {shadow_name} ({shadow_pct:.1f}%)</p>
+                </div>
+                """, unsafe_allow_html=True)
 
-        # BAR CHART — identity spectrum
-        sorted_probs = sorted(probs.items(), key=lambda x: x[1], reverse=True)
+                # ----------------------------------------------
+                # RADAR CHART
+                # ----------------------------------------------
+                st.markdown("<div class='itype-chart-box'>", unsafe_allow_html=True)
 
-        bar = go.Figure()
-        bar.add_trace(go.Bar(
-            x=[p[0] for p in sorted_probs],
-            y=[p[1] for p in sorted_probs],
-            marker_color="#00eaff"
-        ))
-        bar.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)",
-            yaxis_title="Probability (%)"
-        )
-        st.plotly_chart(bar, use_container_width=True)
+                dims = list(final_scores.keys())
+                vals = list(final_scores.values())
 
-        # HEATMAP — 3×3 identity matrix
-        heat_grid = [
-            ["Visionary", "Strategist", "Storyteller"],
-            ["Catalyst", "Apex Innovator", "Integrator"],
-            ["Engineer", "Operator", "Experimenter"]
-        ]
+                radar = go.Figure()
+                radar.add_trace(go.Scatterpolar(
+                    r=vals + [vals[0]],
+                    theta=dims + [dims[0]],
+                    fill='toself',
+                    line_color='#00eaff'
+                ))
+                radar.update_layout(
+                    polar=dict(radialaxis=dict(visible=True, range=[0, 100])),
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    showlegend=False
+                )
 
-        heat_values = [[probs.get(a,0) for a in row] for row in heat_grid]
+                st.plotly_chart(radar, use_container_width=True)
+                st.markdown("</div>", unsafe_allow_html=True)
 
-        heat = go.Figure(go.Heatmap(
-            z=heat_values,
-            x=["Visionary", "Strategist", "Storyteller"],
-            y=["Cluster 1","Cluster 2","Cluster 3"],
-            colorscale="blues",
-            text=[[f"{a}: {probs[a]:.1f}%" for a in row] for row in heat_grid],
-            hoverinfo="text"
-        ))
-        heat.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)",
-            title="Identity Heatmap"
-        )
-        st.plotly_chart(heat, use_container_width=True)
+                # ----------------------------------------------
+                # IDENTITY SPECTRUM BAR CHART
+                # ----------------------------------------------
+                st.markdown("<div class='itype-chart-box'>", unsafe_allow_html=True)
 
-        # BREAKDOWN
-        st.markdown("<hr><h2>Your Innovator Breakdown</h2>", unsafe_allow_html=True)
+                sorted_probs = sorted(probs.items(), key=lambda x: x[1], reverse=True)
 
-        st.markdown("### Strengths")
-        for s in data.get("strengths", []):
-            st.markdown(f"<div class='itype-strength-card'>• {s}</div>", unsafe_allow_html=True)
+                fig = go.Figure()
+                fig.add_trace(go.Bar(
+                    x=[p[0] for p in sorted_probs],
+                    y=[p[1] for p in sorted_probs],
+                    marker_color="#00eaff"
+                ))
+                fig.update_layout(
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    yaxis_title="Probability (%)"
+                )
 
-        st.markdown("### Risks")
-        for r in data.get("risks", []):
-            st.markdown(f"<div class='itype-risk-card'>• {r}</div>", unsafe_allow_html=True)
+                st.plotly_chart(fig, use_container_width=True)
+                st.markdown("</div>", unsafe_allow_html=True)
 
-        st.markdown("### Pathways")
-        for p in data.get("pathways", []):
-            st.markdown(f"<div class='itype-pathway-card'>• {p}</div>", unsafe_allow_html=True)
+                # ----------------------------------------------
+                # HEATMAP (3×3 GRID)
+                # ----------------------------------------------
+                st.markdown("<div class='itype-chart-box'>", unsafe_allow_html=True)
 
-        st.markdown("### Business Models")
-        for bm in data.get("business_models", []):
-            st.markdown(f"<div class='itype-business-card'>• {bm}</div>", unsafe_allow_html=True)
+                heat_archetypes = [
+                    ["Visionary", "Strategist", "Storyteller"],
+                    ["Catalyst", "Apex Innovator", "Integrator"],
+                    ["Engineer", "Operator", "Experimenter"]
+                ]
 
-        st.markdown("### Funding Fit")
-        for fs in data.get("funding_strategy", []):
-            st.markdown(f"<div class='itype-funding-card'>• {fs}</div>", unsafe_allow_html=True)
+                heat_values = [
+                    [probs.get(a, 0) for a in row]
+                    for row in heat_archetypes
+                ]
 
-    # navigation
-    col1, col2 = st.columns(2)
+                heat_fig = go.Figure(data=go.Heatmap(
+                    z=heat_values,
+                    x=heat_archetypes[0],
+                    y=["Row 1", "Row 2", "Row 3"],
+                    colorscale="blues",
+                    text=[[f"{a}: {probs.get(a,0):.1f}%" for a in row] for row in heat_archetypes],
+                    hoverinfo="text",
+                ))
+
+                heat_fig.update_layout(
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    font=dict(color="#e5f4ff"),
+                    title="Identity Heatmap"
+                )
+
+                st.plotly_chart(heat_fig, use_container_width=True)
+                st.markdown("</div>", unsafe_allow_html=True)
+
+                # ----------------------------------------------
+                # DETAILED BREAKDOWN
+                # ----------------------------------------------
+                st.markdown("<hr><h2>Your Innovator Breakdown</h2>", unsafe_allow_html=True)
+
+                st.markdown("<h3>Strengths</h3>", unsafe_allow_html=True)
+                for s in archetype_data.get("strengths", []):
+                    st.markdown(f"<div class='itype-strength-card'>• {s}</div>", unsafe_allow_html=True)
+
+                st.markdown("<h3 style='margin-top:20px;'>Growth Edges & Risks</h3>", unsafe_allow_html=True)
+                for r in archetype_data.get("risks", []):
+                    st.markdown(f"<div class='itype-risk-card'>• {r}</div>", unsafe_allow_html=True)
+
+                st.markdown("<h3 style='margin-top:20px;'>Recommended Innovation Pathways</h3>", unsafe_allow_html=True)
+                for pth in archetype_data.get("pathways", []):
+                    st.markdown(f"<div class='itype-pathway-card'>• {pth}</div>", unsafe_allow_html=True)
+
+                st.markdown("<h3 style='margin-top:20px;'>Suggested Business Models</h3>", unsafe_allow_html=True)
+                for bm in archetype_data.get("business_models", []):
+                    st.markdown(f"<div class='itype-business-card'>• {bm}</div>", unsafe_allow_html=True)
+
+                st.markdown("<h3 style='margin-top:20px;'>Funding Strategy Fit</h3>", unsafe_allow_html=True)
+                for fs in archetype_data.get("funding_strategy", []):
+                    st.markdown(f"<div class='itype-funding-card'>• {fs}</div>", unsafe_allow_html=True)
+
+                st.markdown("<hr><h3>How to Interpret Your Results</h3>", unsafe_allow_html=True)
+                st.markdown("""
+                - **Stability %** — how consistent your identity is across 5000 simulations.  
+                - **Shadow archetype** — your second-strongest identity.  
+                - **Identity spectrum** — distribution of probabilities across all archetypes.  
+                - **Heatmap** — where your identity clusters in the 3×3 matrix.  
+                - **Radar chart** — your core innovation dimensions (thinking, execution, risk, motivation, team, commercial).
+                """)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    col1, col2 = st.columns([1, 1])
+
     with col1:
-        if st.button("⬅ Back"):
+        if st.button("⬅ Back to Scenarios"):
             st.session_state["step"] = 2
+            st.session_state["has_results"] = False
+            st.session_state["open_archetype"] = None
             st.rerun()
+
     with col2:
         if st.button("🔄 Start Over"):
-            for k in list(st.session_state.keys()):
-                if k.startswith("q") or k.startswith("sc_"):
-                    del st.session_state[k]
+            for key in list(st.session_state.keys()):
+                if key.startswith("q") or key.startswith("sc_"):
+                    del st.session_state[key]
             st.session_state["step"] = 1
+            st.session_state["has_results"] = False
+            st.session_state["open_archetype"] = None
             st.rerun()
 
+    # ========================================================
+    # ARCHETYPE LIBRARY — 3×3 TILE GRID (ONLY AFTER RESULTS)
+    # ========================================================
 
-# ============================================================
-# ============================================================
-# ARCHETYPE LIBRARY — only after CALCULATION & only in Step 3
-# ============================================================
+    if st.session_state.get("has_results") and archetypes:
+        st.markdown("<hr class='hr-neon'>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align:center;'>Explore All Archetypes</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='opacity:0.85; text-align:center;'>Click a tile to reveal its profile.</p>", unsafe_allow_html=True)
 
-if "has_results" in st.session_state and st.session_state["has_results"]:
+        cols = st.columns(3)
+        items = list(archetypes.items())
 
-    st.markdown("<hr class='hr-neon'>", unsafe_allow_html=True)
-    st.markdown("<h2 style='text-align:center;'>Explore All Archetypes</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='opacity:0.85; text-align:center;'>Click any tile to reveal its full profile.</p>", unsafe_allow_html=True)
+        for idx, (name, data) in enumerate(items):
+            col = cols[idx % 3]
+            with col:
+                is_active = (st.session_state["open_archetype"] == name)
+                tile_class = "archetype-tile active" if is_active else "archetype-tile"
 
-    # Track open archetype
-    if "open_archetype" not in st.session_state:
-        st.session_state["open_archetype"] = None
+                # Wrapper div styled as glowing tile
+                st.markdown(f"<div class='{tile_class}'>", unsafe_allow_html=True)
 
-    clicked_key = st.session_state.get("clicked_archetype_js")
+                clicked = st.button(
+                    name,
+                    key=f"arche_{name}"
+                )
 
-# Capture JS message
-clicked_raw = st.experimental_get_query_params().get("clicked_archetype", [None])[0]
+                st.markdown("</div>", unsafe_allow_html=True)
 
-if clicked_raw:
-    st.session_state["open_archetype"] = clicked_raw
-    clicked_key = clicked_raw
+                if clicked:
+                    if is_active:
+                        st.session_state["open_archetype"] = None
+                    else:
+                        st.session_state["open_archetype"] = name
 
-    # 3×3 GRID
-    cols = st.columns(3)
+        # Expanded details panel
+        if st.session_state["open_archetype"] in archetypes:
+            a = st.session_state["open_archetype"]
+            info = archetypes[a]
 
-    for i, (name, data) in enumerate(archetypes.items()):
-        col = cols[i % 3]
-
-        with col:
-            active = (st.session_state["open_archetype"] == name)
-            tile_class = "archetype-tile active" if active else "archetype-tile"
-
-            # Invisible yet fully clickable button wrapper
-            clicked = st.button(
-        label=f"""
-        <div class="{tile_class}">
-        <h4>{name}</h4>
-        </div>
-        """,
-        key=f"arche_btn_{name}",
-        use_container_width=True
-        )
-
-            # Force streamlit button to be invisible
             st.markdown(f"""
-            <style>
-            button[data-testid="baseButton-secondary"][key="arche_btn_{name}"] {{
-                background: none !important;
-                border: none !important;
-                padding: 0 !important;
-                box-shadow: none !important;
-            }}
-        </style>
+            <div class="archetype-panel">
+                <h2 style="text-align:center;">{a}</h2>
+                <p>{info.get("description","")}</p>
+
+                <h4>Strengths</h4>
+                <ul>{''.join([f'<li>{s}</li>' for s in info.get('strengths',[])])}</ul>
+
+                <h4>Risks</h4>
+                <ul>{''.join([f'<li>{r}</li>' for r in info.get('risks',[])])}</ul>
+
+                <h4>Pathways</h4>
+                <ul>{''.join([f'<li>{p}</li>' for p in info.get('pathways',[])])}</ul>
+
+                <h4>Business Models</h4>
+                <ul>{''.join([f'<li>{bm}</li>' for bm in info.get('business_models',[])])}</ul>
+
+                <h4>Funding Strategy Fit</h4>
+                <ul>{''.join([f'<li>{fs}</li>' for fs in info.get('funding_strategy',[])])}</ul>
+            </div>
             """, unsafe_allow_html=True)
-
-            if clicked:
-                # Toggle behaviour
-                if st.session_state["open_archetype"] == name:
-                    st.session_state["open_archetype"] = None
-                else:
-                    st.session_state["open_archetype"] = name
-
-    # EXPANDED PANEL
-    if st.session_state["open_archetype"]:
-        a = st.session_state["open_archetype"]
-        info = archetypes[a]
-
-        st.markdown(f"""
-        <div class="archetype-panel">
-         <h2 style="text-align:center;">{a}</h2>
-        <p>{info.get("description","")}</p>
-
-        <h4>Strengths</h4>
-        <ul>{''.join([f'<li>{s}</li>' for s in info.get('strengths',[])])}</ul>
-
-        <h4>Risks</h4>
-        <ul>{''.join([f'<li>{r}</li>' for r in info.get('risks',[])])}</ul>
-
-        <h4>Pathways</h4>
-        <ul>{''.join([f'<li>{p}</li>' for p in info.get('pathways',[])])}</ul>
-
-        <h4>Business Models</h4>
-        <ul>{''.join([f'<li>{bm}</li>' for bm in info.get('business_models',[])])}</ul>
-
-        <h4>Funding Strategy Fit</h4>
-        <ul>{''.join([f'<li>{fs}</li>' for fs in info.get('funding_strategy',[])])}</ul>
-        </div>
-        """, unsafe_allow_html=True)
