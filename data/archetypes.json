@@ -1,1 +1,146 @@
+{
+  "Visionary": {
+    "signature": {
+      "thinking": 90,
+      "execution": 55,
+      "risk": 75,
+      "motivation": 95,
+      "team": 60,
+      "commercial": 55
+    },
+    "description": "You are a Visionary innovator — drawn to bold, future-shaping ideas and emerging possibilities. You see what could exist long before others do.",
+    "strengths": [
+      "Naturally imagines future states and long-term possibilities",
+      "Comfortable with ambiguity and early-stage, high-uncertainty ideas",
+      "Energised by exploring new concepts and reframing problems",
+      "Inspires others with compelling visions and narratives"
+    ],
+    "risks": [
+      "May underinvest in implementation and operational detail",
+      "Can generate more ideas than can realistically be executed",
+      "Risk of losing interest once an idea moves into routine delivery",
+      "May underestimate practical constraints such as budget or capacity"
+    ]
+  },
+
+  "Architect": {
+    "signature": {
+      "thinking": 70,
+      "execution": 90,
+      "risk": 45,
+      "motivation": 65,
+      "team": 65,
+      "commercial": 75
+    },
+    "description": "You are an Architect innovator — a systems thinker who brings structure, rigour, and stability to turning ideas into robust realities.",
+    "strengths": [
+      "Excellent at designing repeatable systems, processes, and frameworks",
+      "Strong follow-through from concept to implementation",
+      "Balances innovation with reliability, compliance, and quality",
+      "Able to translate vision into roadmaps, milestones, and standards"
+    ],
+    "risks": [
+      "May prefer proven methods over experimental approaches",
+      "Can slow down ideation if structure is imposed too early",
+      "Risk of overengineering solutions before validating assumptions",
+      "May find highly chaotic or rapidly changing environments draining"
+    ]
+  },
+
+  "Trailblazer": {
+    "signature": {
+      "thinking": 85,
+      "execution": 70,
+      "risk": 90,
+      "motivation": 85,
+      "team": 55,
+      "commercial": 60
+    },
+    "description": "You are a Trailblazer innovator — you move fast, test boldly, and push into uncharted territory through rapid experimentation.",
+    "strengths": [
+      "High bias towards action and experimentation",
+      "Comfortable taking calculated risks and making quick decisions",
+      "Excellent at building momentum and testing ideas in the real world",
+      "Thrives in early-stage, fast-moving innovation contexts"
+    ],
+    "risks": [
+      "May overlook deeper analysis, validation, or documentation",
+      "Can leave teams behind if pace and change are too intense",
+      "Risk of burnout if constantly pushing into new territory",
+      "May pivot too often without fully extracting value from wins"
+    ]
+  },
+
+  "Strategist": {
+    "signature": {
+      "thinking": 65,
+      "execution": 70,
+      "risk": 55,
+      "motivation": 70,
+      "team": 75,
+      "commercial": 90
+    },
+    "description": "You are a Strategist innovator — you connect ideas to markets, models, and positioning. You think in terms of value, fit, and long-term advantage.",
+    "strengths": [
+      "Thinks clearly about market fit, differentiation, and positioning",
+      "Considers financial, operational, and policy realities early",
+      "Strong at prioritising ideas based on impact and feasibility",
+      "Acts as a bridge between technical teams and decision-makers"
+    ],
+    "risks": [
+      "May appear cautious or slow to commit without enough data",
+      "Can deprioritise radical ideas that look risky on paper",
+      "Risk of over-analysing and delaying experiments",
+      "May be perceived as ‘commercialising’ too early by creative teams"
+    ]
+  },
+
+  "Maker": {
+    "signature": {
+      "thinking": 60,
+      "execution": 85,
+      "risk": 65,
+      "motivation": 70,
+      "team": 55,
+      "commercial": 55
+    },
+    "description": "You are a Maker innovator — you think with your hands. You build, prototype, test, and refine through tangible outputs.",
+    "strengths": [
+      "Excellent at turning abstract ideas into working prototypes",
+      "Learns quickly through hands-on iteration and experimentation",
+      "Brings practical constraints and real-world performance into view",
+      "Comfortable with tools, technology, and implementation details"
+    ],
+    "risks": [
+      "May focus on building without stepping back for strategic fit",
+      "Can underestimate the importance of communication and storytelling",
+      "Risk of perfectionism in the prototype or technical details",
+      "May delay involving users or stakeholders until later than ideal"
+    ]
+  },
+
+  "Synthesizer": {
+    "signature": {
+      "thinking": 80,
+      "execution": 65,
+      "risk": 60,
+      "motivation": 80,
+      "team": 85,
+      "commercial": 70
+    },
+    "description": "You are a Synthesizer innovator — you bring people, ideas, and disciplines together to create integrated, cross-cutting solutions.",
+    "strengths": [
+      "Connects diverse perspectives into coherent solutions",
+      "Collaborates effectively across disciplines and functions",
+      "Sees interdependencies, systems, and second-order effects",
+      "Strong at facilitation, co-creation, and alignment-building"
+    ],
+    "risks": [
+      "May spend too much time aligning stakeholders before acting",
+      "Risk of avoiding conflict by over-accommodating different views",
+      "Can feel stretched when pulled between many domains",
+      "May struggle in contexts that reward narrow, individual ownership"
+    ]
+  }
+}
 
