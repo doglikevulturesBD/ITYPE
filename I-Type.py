@@ -60,14 +60,14 @@ scenarios = load_json("data/scenarios.json", default=[])
 
 st.markdown("""
 <div class="hero-wrapper">
-  <div class="hero">
-    <div class="hero-glow"></div>
-    <div class="hero-particles"></div>
-    <div class="hero-content">
-      <h1 class="hero-title">I-TYPE — Innovator Type Assessment</h1>
-      <p class="hero-sub">Powered by the Innovator DNA Index™</p>
-    </div>
-  </div>
+<div class="hero">
+<div class="hero-glow"></div>
+<div class="hero-particles"></div>
+<div class="hero-content">
+<h1 class="hero-title">I-TYPE — Innovator Type Assessment</h1>
+<p class="hero-sub">Powered by the Innovator DNA Index™</p>
+</div>
+</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -433,15 +433,7 @@ elif step == 3:
                 is_active = (st.session_state["open_archetype"] == name)
                 tile_class = "archetype-tile active" if is_active else "archetype-tile"
 
-                # Wrapper div styled as glowing tile
-                st.markdown(f"<div class='{tile_class}'>", unsafe_allow_html=True)
 
-                clicked = st.button(
-                    name,
-                    key=f"arche_{name}"
-                )
-
-                st.markdown("</div>", unsafe_allow_html=True)
 
                 if clicked:
                     if is_active:
