@@ -414,94 +414,55 @@ elif step == 3:
             st.session_state["has_results"] = False
             st.session_state["open_archetype"] = None
             st.rerun()
-import os
-
-st.subheader("DEBUG — File Checks")
-
-st.write("Current Working Directory:", os.getcwd())
-
-# Check that /data exists
-try:
-    st.write("Folders in CWD:", os.listdir())
-except:
-    st.write("Could not list root folders.")
-
-# Check data folder
-try:
-    st.write("Contents of data/:", os.listdir("data"))
-except:
-    st.error("❌ data/ folder NOT found")
-
-# Check archetype_images folder
-try:
-    st.write("Contents of data/archetype_images/:", os.listdir("data/archetype_images"))
-except:
-    st.error("❌ data/archetype_images/ NOT found")
-
-# Check specific file
-selected = "Visionary"   # just test one
-test_path = f"data/archetype_images/{selected}.png"
-
-st.write("Testing path:", test_path)
-
-try:
-    with open(test_path, "rb") as f:
-        st.success("🎉 Visionary.png FOUND!")
-except Exception as e:
-    st.error(f"❌ Visionary.png NOT FOUND")
-    st.write("Error:", e)
 
 # ============================================================
 # ARCHETYPE GRID WITH SIMPLE BUTTONS (3×3)
-# Image appears only inside expanded panel
-# Folder: /data/archetype_images/
 # ============================================================
 
 if st.session_state.get("has_results") and archetypes:
 
+    # Create the state key once
+    if "open_archetype" not in st.session_state:
+        st.session_state["open_archetype"] = None
+
     st.markdown("<hr class='hr-neon'>", unsafe_allow_html=True)
     st.markdown("<h2 style='text-align:center;'>Explore All Archetypes</h2>", unsafe_allow_html=True)
-    st.markdown(
-        "<p style='opacity:0.85; text-align:center;'>Click a tile to reveal its profile.</p>",
-        unsafe_allow_html=True,
-    )
+    st.markdown("<p style='opacity:0.85; text-align:center;'>Click a tile to reveal its profile.</p>",
+                unsafe_allow_html=True)
 
     cols = st.columns(3)
 
     for idx, (name, data) in enumerate(archetypes.items()):
         with cols[idx % 3]:
 
-            # Clean simple button (NO images)
-            tile_clicked = st.button(
-                name,
-                key=f"arch_button_{name}",
-                use_container_width=True
-            )
+            # SIMPLE button — NO HTML
+            if st.button(name, key=f"arch_btn_{name}", use_container_width=True):
 
-            # Toggle behaviour
-            if tile_clicked:
-                if st.session_state.get("open_archetype") == name:
+                # Toggle open/close
+                if st.session_state["open_archetype"] == name:
                     st.session_state["open_archetype"] = None
                 else:
                     st.session_state["open_archetype"] = name
 
     # ============================================================
-    # EXPANDED PANEL WITH IMAGE
+    # EXPANDED PANEL
     # ============================================================
-    selected = st.session_state.get("open_archetype")
-    if selected:
+    selected = st.session_state["open_archetype"]
+
+    st.write("DEBUG selected:", selected)  # REMOVE LATER
+
+    if selected is not None:
+
+        img_path = f"data/archetype_images/{selected.replace(' ', '_')}.png"
+
+        st.write("DEBUG loading:", img_path)  # REMOVE LATER
+
+        # IMAGE
+        st.image(img_path, use_column_width=True)
+
+        # PANEL
         info = archetypes[selected]
 
-        # Path to image
-        img_path = f"data/archetype_images/{selected}.png"
-
-        # Show image if available
-        try:
-            st.image(img_path, use_column_width=True)
-        except:
-            st.warning("No image found for this archetype.")
-
-        # Details panel
         st.markdown(f"""
         <div class="archetype-panel">
         <h2 style="text-align:center;">{selected}</h2>
