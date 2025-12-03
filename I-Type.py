@@ -447,34 +447,34 @@ if st.session_state["open_archetype"]:
 
     st.markdown(f"""
     <div class='archetype-panel'>
-        <h2 style="text-align:center; margin-bottom:10px;">
-            {a}
-        </h2>
-        <p style="opacity:0.85;">{info.get("description","")}</p>
+    <h2 style="text-align:center; margin-bottom:10px;">
+    {a}
+    </h2>
+    <p style="opacity:0.85;">{info.get("description","")}</p>
 
-        <h4>Strengths</h4>
-        <ul>
-            {''.join([f'<li>{s}</li>' for s in info.get("strengths",[])])}
-        </ul>
+    <h4>Strengths</h4>
+    <ul>
+    {''.join([f'<li>{s}</li>' for s in info.get("strengths",[])])}
+    </ul>
 
-        <h4>Risks & Growth Edges</h4>
-        <ul>
-            {''.join([f'<li>{r}</li>' for r in info.get("risks",[])])}
-        </ul>
+    <h4>Risks & Growth Edges</h4>
+    <ul>
+    {''.join([f'<li>{r}</li>' for r in info.get("risks",[])])}
+    </ul>
 
-        <h4>Recommended Pathways</h4>
-        <ul>
-            {''.join([f'<li>{p}</li>' for p in info.get("pathways",[])])}
-        </ul>
+    <h4>Recommended Pathways</h4>
+    <ul>
+    {''.join([f'<li>{p}</li>' for p in info.get("pathways",[])])}
+    </ul>
 
-        <h4>Business Model Fit</h4>
-        <ul>
-            {''.join([f'<li>{bm}</li>' for bm in info.get("business_models",[])])}
-        </ul>
+    <h4>Business Model Fit</h4>
+    <ul>
+    {''.join([f'<li>{bm}</li>' for bm in info.get("business_models",[])])}
+    </ul>
 
-        <h4>Funding Strategy Fit</h4>
-        <ul>
+    <h4>Funding Strategy Fit</h4>
+    <ul>
             {''.join([f'<li>{fs}</li>' for fs in info.get("funding_strategy",[])])}
-        </ul>
+    </ul>
     </div>
     """, unsafe_allow_html=True)
