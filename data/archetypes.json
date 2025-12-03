@@ -1,273 +1,85 @@
 {
-  "Visionary Architect": {
-    "signature": {
-      "thinking": 95,
-      "execution": 45,
-      "risk": 80,
-      "motivation": 85,
-      "team": 55,
-      "commercial": 40
-    },
-    "description": "You are a future-shaper. You see possibilities others miss and excel at strategic insight, pattern recognition, and bold idea generation.",
+  "Explorer": {
+    "description": "Curious, experimental, and constantly discovering new possibilities.",
     "strengths": [
-      "Exceptional long-range thinking",
-      "Sees patterns across industries and domains",
-      "Creates compelling future narratives",
-      "Thrives in ambiguity and explores the unknown"
+      "Generates unconventional ideas",
+      "Strong creative thinking",
+      "Comfortable with ambiguity"
     ],
     "risks": [
-      "May lose momentum before execution",
-      "Can overwhelm teams with abstract vision",
-      "Ideas may lack immediate practicality"
-    ],
-    "trl_affinity": "Best suited for TRL 1–4 (Ideation, Concept Development, Early Prototype thinking)",
-    "pathway_suggestions": [
-      "Foresight and scenario planning roles",
-      "Concept incubators or innovation labs",
-      "Deep-tech exploration and futures work",
-      "Blue-ocean strategy creation"
-    ],
-    "business_models": [
-      "Vision-led subscription platforms",
-      "IP licensing for early-stage concepts",
-      "Design and strategy consultancy",
-      "Narrative-driven innovation studios"
-    ],
-    "funding_strategy": [
-      "Early-stage grants focused on ideation",
-      "Angel investment for visionary concepts",
-      "Innovation challenges and ideation prizes"
-    ],
-    "ip_strategy": [
-      "Protect core concepts early (provisional filings)",
-      "Emphasise trade secrets for emerging ideas",
-      "Create a long-term patent roadmap"
+      "May struggle to finish projects",
+      "Chases too many ideas",
+      "Easily distracted by novelty"
     ]
   },
 
-  "Experimental Builder": {
-    "signature": {
-      "thinking": 55,
-      "execution": 95,
-      "risk": 70,
-      "motivation": 80,
-      "team": 50,
-      "commercial": 55
-    },
-    "description": "You build your way into clarity. Fast prototyping, iteration, and experimental learning are your superpowers.",
+  "Builder": {
+    "description": "Practical, structured, and excellent at executing ideas.",
     "strengths": [
-      "Rapid prototyping ability",
-      "Learns through experimentation",
-      "Works well with constraints",
-      "Quick to identify what works"
+      "Strong at planning and delivery",
+      "Persistent and reliable",
+      "Turns concepts into reality"
     ],
     "risks": [
-      "May prototype instead of strategising",
-      "Can over-prioritise speed",
-      "Documentation may be weak"
-    ],
-    "trl_affinity": "Best suited for TRL 3–6 (Proof-of-concept, Prototype, Pilot Testing)",
-    "pathway_suggestions": [
-      "Rapid innovation teams",
-      "MVP development squads",
-      "Pilot projects and testbeds",
-      "Hackathons and demo-driven roles"
-    ],
-    "business_models": [
-      "Prototype-first platforms",
-      "Productised services",
-      "Experiment-driven SaaS"
-    ],
-    "funding_strategy": [
-      "Prototype grants",
-      "Pilot funding programmes",
-      "Early-stage angel funding"
-    ],
-    "ip_strategy": [
-      "Protect core hardware or process innovations",
-      "Use design patents for prototypes",
-      "Maintain strong lab notebooks and version control"
+      "May lack creativity at times",
+      "Over-focus on feasibility",
+      "May avoid high uncertainty"
     ]
   },
 
-  "Market Alchemist": {
-    "signature": {
-      "thinking": 60,
-      "execution": 55,
-      "risk": 50,
-      "motivation": 80,
-      "team": 65,
-      "commercial": 95
-    },
-    "description": "You translate ideas into real market value. You excel at user understanding, commercial strategy, and creating scalable offerings.",
+  "Challenger": {
+    "description": "Bold, risk-tolerant, and pushes boundaries to create breakthroughs.",
     "strengths": [
-      "Strong market and user insight",
-      "Translates concepts into viable businesses",
-      "Balances value, feasibility, and desirability",
-      "Excellent in customer-focused roles"
+      "High risk tolerance",
+      "Fast decision-making",
+      "Resilient under pressure"
     ],
     "risks": [
-      "May restrain risky innovation",
-      "Might over-rely on validated markets",
-      "Could undervalue deep R&D"
-    ],
-    "trl_affinity": "Best suited for TRL 5–9 (Pilot validation → Market-ready products)",
-    "pathway_suggestions": [
-      "Go-to-market roles",
-      "Business model innovation",
-      "Product management",
-      "Commercial strategy teams"
-    ],
-    "business_models": [
-      "Platform models",
-      "Marketplaces",
-      "Recurring revenue models",
-      "Data monetisation"
-    ],
-    "funding_strategy": [
-      "Seed and Series A funding",
-      "Revenue-based financing",
-      "Corporate venture partnerships"
-    ],
-    "ip_strategy": [
-      "Trademark and brand protection",
-      "Competitive intelligence monitoring",
-      "Split patent + trade secret hybrid strategy"
+      "Can take unnecessary risks",
+      "May overlook details",
+      "Sometimes too confrontational"
     ]
   },
 
-  "Systems Integrator": {
-    "signature": {
-      "thinking": 70,
-      "execution": 80,
-      "risk": 45,
-      "motivation": 65,
-      "team": 85,
-      "commercial": 70
-    },
-    "description": "You bring people, technologies, and processes together. You excel in coordination-heavy innovation environments.",
+  "Driver": {
+    "description": "Highly motivated, disciplined, and goal-focused.",
     "strengths": [
-      "Exceptional coordination and systems thinking",
-      "Brings teams into alignment",
-      "Balances multiple constraints",
-      "Good at integrating cross-functional components"
+      "Strong intrinsic motivation",
+      "High energy and commitment",
+      "Pushes projects forward"
     ],
     "risks": [
-      "May resist high-risk innovation",
-      "Can become bottlenecked by complexity",
-      "May over-coordinate instead of executing boldly"
-    ],
-    "trl_affinity": "Best suited for TRL 6–8 (System integration, Scaling pilots, Pre-commercial deployment)",
-    "pathway_suggestions": [
-      "Innovation project management",
-      "Scaled deployments",
-      "Cross-functional programme leadership",
-      "Enterprise-level coordination"
-    ],
-    "business_models": [
-      "Integration-as-a-service",
-      "Enterprise SaaS",
-      "Solution architecture services"
-    ],
-    "funding_strategy": [
-      "Later-stage pilots",
-      "Corporate innovation budgets",
-      "Public-sector modernisation grants"
-    ],
-    "ip_strategy": [
-      "Process patents",
-      "System-architecture claims",
-      "Consortium IP agreements"
+      "May burn out",
+      "May push others too hard",
+      "May take on too many roles"
     ]
   },
 
-  "Risk-Driven Pioneer": {
-    "signature": {
-      "thinking": 65,
-      "execution": 60,
-      "risk": 98,
-      "motivation": 85,
-      "team": 40,
-      "commercial": 55
-    },
-    "description": "You thrive in uncertainty and break boundaries. You’re the first to jump, explore, and challenge the status quo.",
+  "Collaborator": {
+    "description": "Connects people, builds teams, and strengthens communication.",
     "strengths": [
-      "Bold experimentation",
-      "High tolerance for ambiguity",
-      "Fearless with unconventional ideas",
-      "Pushes boundaries that others avoid"
+      "Works well with diverse teams",
+      "Excellent communication",
+      "Builds trust easily"
     ],
     "risks": [
-      "May over-commit to risky paths",
-      "Inconsistent follow-through",
-      "Can destabilise structured teams"
-    ],
-    "trl_affinity": "Best suited for TRL 1–3 and TRL 9+ (radical ideas or bold deployment phases)",
-    "pathway_suggestions": [
-      "Entrepreneurial ventures",
-      "Moonshot projects",
-      "High-risk, high-return innovation"
-    ],
-    "business_models": [
-      "Disruptive startups",
-      "Radical new category creation",
-      "High-risk competitive plays"
-    ],
-    "funding_strategy": [
-      "Angel and super-angel networks",
-      "Moonshot or deep-tech funds",
-      "High-risk accelerator programmes"
-    ],
-    "ip_strategy": [
-      "Offensive IP strategy to secure space",
-      "Fast provisional filings",
-      "Broad protection for new classes of innovation"
+      "May avoid conflict",
+      "Over-relies on group decisions",
+      "May struggle with solo tasks"
     ]
   },
 
-  "Human-Centered Catalyst": {
-    "signature": {
-      "thinking": 55,
-      "execution": 55,
-      "risk": 40,
-      "motivation": 95,
-      "team": 95,
-      "commercial": 65
-    },
-    "description": "You connect, empower, and align people. You are the human engine behind innovation teams.",
+  "Strategist": {
+    "description": "Understands customers, markets, and the commercial journey of innovation.",
     "strengths": [
-      "Exceptional collaboration and facilitation",
-      "Motivates teams and builds culture",
-      "Strong empathy and intuition",
-      "Great at user-driven innovation"
+      "Sees the commercial pathway",
+      "Understands user needs",
+      "Balances feasibility and value"
     ],
     "risks": [
-      "May avoid conflict for harmony",
-      "Could under-challenge disruptive ideas",
-      "May over-index on group decisions"
-    ],
-    "trl_affinity": "Best suited for TRL 2–7, especially team-driven prototyping and problem discovery",
-    "pathway_suggestions": [
-      "Facilitation-heavy innovation teams",
-      "Design thinking roles",
-      "User research and validation",
-      "Culture-building innovation programmes"
-    ],
-    "business_models": [
-      "Community-driven models",
-      "Collaborative platforms",
-      "User co-creation studios"
-    ],
-    "funding_strategy": [
-      "Design-led innovation grants",
-      "Human-centered pilot funding",
-      "Partnership-based funding pathways"
-    ],
-    "ip_strategy": [
-      "User experience protection",
-      "Service design IP",
-      "Joint innovation agreements"
+      "May prioritise business over innovation",
+      "May be overly analytical",
+      "Sometimes slow to act"
     ]
   }
 }
-
