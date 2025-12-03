@@ -417,3 +417,58 @@ body, .main, .stApp {
     border: 1px solid rgba(0,255,255,0.15);
     box-shadow: inset 0 0 15px rgba(0,255,255,0.15);
 }
+
+/* === ARCHETYPE GRID CONTAINER === */
+.archetype-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin-top: 25px;
+}
+
+/* === ARCHETYPE TILE === */
+.archetype-tile {
+    background: rgba(20, 28, 48, 0.55);
+    border: 1px solid rgba(0,255,255,0.18);
+    padding: 22px;
+    border-radius: 16px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    backdrop-filter: blur(8px);
+    transition: 0.25s ease;
+    box-shadow: 0 0 18px rgba(0,255,255,0.12);
+}
+
+.archetype-tile:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: #4af3ff;
+    box-shadow: 0 0 30px rgba(0,255,255,0.28),
+                inset 0 0 22px rgba(120,60,255,0.25);
+}
+
+.archetype-tile h4 {
+    margin: 0;
+    font-size: 1.25rem;
+    background: linear-gradient(90deg, #00eaff, #7a5cff, #ff4bf1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* === SELECTED TILE (active) === */
+.archetype-tile.active {
+    border-color: #00f6ff;
+    box-shadow: 0 0 35px rgba(0,255,255,0.4),
+                inset 0 0 25px rgba(120,60,255,0.35);
+    transform: translateY(-4px);
+}
+
+/* === EXPANDED PANEL === */
+.archetype-panel {
+    margin-top: 25px;
+    padding: 20px 28px;
+    border-radius: 16px;
+    background: rgba(10,14,25,0.7);
+    border: 1px solid rgba(0,255,255,0.22);
+    box-shadow: inset 0 0 20px rgba(0,255,255,0.22);
+}
