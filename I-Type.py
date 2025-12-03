@@ -55,12 +55,12 @@ scenarios = load_json("data/scenarios.json", default=[])
 st.markdown("""
 <div class="hero-wrapper">
 <div class="hero">
-    <div class="hero-glow"></div>
-    <div class="hero-particles"></div>
-    <div class="hero-content">
-        <h1 class="hero-title">I-TYPE — Innovator Type Assessment</h1>
-        <p class="hero-sub">Powered by the Innovator DNA Index™</p>
-    </div>
+<div class="hero-glow"></div>
+<div class="hero-particles"></div>
+<div class="hero-content">
+<h1 class="hero-title">I-TYPE — Innovator Type Assessment</h1>
+<p class="hero-sub">Powered by the Innovator DNA Index™</p>
+</div>
 </div>
 </div>
 """, unsafe_allow_html=True)
@@ -152,8 +152,8 @@ with tab_scenario:
 
         st.markdown(f"""
         <div class='itype-scenario-card'>
-            <h3>{title}</h3>
-            <p>{desc}</p>
+        <h3>{title}</h3>
+        <p>{desc}</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -212,9 +212,9 @@ with tab_results:
         # ----------------------------------------------------
         st.markdown(f"""
         <div class='itype-result-card'>
-            <h1>{primary_name}</h1>
-            <p>{archetype_data.get("description","")}</p>
-            <p><b>Stability:</b> {stability:.1f}%</p>
+        <h1>{primary_name}</h1>
+        <p>{archetype_data.get("description","")}</p>
+        <p><b>Stability:</b> {stability:.1f}%</p>
         </div>
         """, unsafe_allow_html=True)
 
