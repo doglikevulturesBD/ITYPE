@@ -51,7 +51,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-tabs = st.tabs(["🔍 Assessment", "🧪 Scenarios", "📊 Results"])
+tabs = st.tabs(["🔍 Assessment", "🧪 Scenarios", "📊 Results", "DEV"])
 
 # ============================================================
 # TAB 1 — QUESTIONNAIRE
@@ -330,3 +330,67 @@ with tabs[2]:
         - **Radar chart** — your core cognitive–behavioural innovation traits.
         """)
 
+# ============================================================
+# TAB 4 — DEVELOPER SIMULATION
+# ============================================================
+
+with tabs[3]:
+    st.markdown("## 🛠 Developer Simulation — 5000 Random Profiles")
+    st.caption("Use this to test archetype distributions and engine behaviour.")
+
+    run_sim = st.button("Run 5000 Simulation")
+
+    if run_sim:
+        import random
+
+        # Prepare counters
+        sim_counts = {name: 0 for name in archetypes}
+
+        # Run simulation
+        for _ in range(5000):
+            random_profile = {
+                "thinking": random.uniform(0, 100),
+                "execution": random.uniform(0, 100),
+                "risk": random.uniform(0, 100),
+                "motivation": random.uniform(0, 100),
+                "team": random.uniform(0, 100),
+                "commercial": random.uniform(0, 100),
+            }
+            name, _ = determine_archetype(random_profile, archetypes)
+            sim_counts[name] += 1
+
+        # Convert to percentage
+        sim_percent = {
+            k: v / 5000 * 100
+            for k, v in sim_counts.items()
+        }
+
+        st.subheader("Archetype Distribution")
+        st.write(sim_percent)
+
+        # Bar chart
+        sim_names = list(sim_percent.keys())
+        sim_values = list(sim_percent.values())
+
+        fig = go.Figure()
+        fig.add_trace(go.Bar(
+            x=sim_names,
+            y=sim_values,
+            marker_color="#00eaff"
+        ))
+
+        fig.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(color='#e5f4ff'),
+            yaxis_title="Percentage of simulations (%)",
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+
+        st.markdown("""
+        <small>
+        This simulation uses fully random profiles (0–100 per dimension)  
+        to test how naturally each archetype appears when no bias exists.
+        </small>
+        """, unsafe_allow_html=True)
