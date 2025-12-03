@@ -1,188 +1,112 @@
 import math
 
 # ============================================================
-# SCORING ENGINE
+# IDIX SCORING ENGINE
 # ============================================================
 
 def calculate_idix_scores(answers):
     """
-    Convert questionnaire answers (1–5 sliders) into normalised
-    0–100 dimension scores.
+    Converts questionnaire responses into normalized 0–100 scores
+    for each dimension.
 
-    Parameters
-    ----------
-    answers : dict
-        {
-          "question text": {
-              "value": int 1–5,
-              "dimension": "thinking" | "execution" | ...,
-              "reverse": bool
-          }
-        }
-
-    Returns
-    -------
-    dict of normalised 0–100 scores per dimension.
+    answers format:
+    {
+        "Q1": {"value": 4, "dimension": "CRE", "reverse": False},
+        "Q2": {"value": 2, "dimension": "ANA", "reverse": True},
+        ...
+    }
     """
 
+    # Step 1 — accumulate raw values
     dimension_totals = {}
     dimension_counts = {}
 
-    for q, data in answers.items():
-        raw = data["value"]
-        dim = data["dimension"]
-        reverse = data["reverse"]
+    for qid, entry in answers.items():
+        dim = entry["dimension"]
+        value = entry["value"]
 
-        # Reverse score mapping: 1→5, 2→4, 3→3, 4→2, 5→1
-        if reverse:
-            raw = 6 - raw
+        # Reverse-score if needed (1↔5, 2↔4, 3 stays)
+        if entry.get("reverse", False):
+            value = 6 - value
 
-        # Convert 1–5 → 0–1 (normalised)
-        norm = (raw - 1) / 4
+        dimension_totals[dim] = dimension_totals.get(dim, 0) + value
+        dimension_counts[dim] = dimension_counts.get(dim, 0) + 1
 
-        if dim not in dimension_totals:
-            dimension_totals[dim] = 0
-            dimension_counts[dim] = 0
-
-        dimension_totals[dim] += norm
-        dimension_counts[dim] += 1
-
-    # Convert averages to 0–100 scale
+    # Step 2 — convert to 0–100 scale
     scores = {}
-    for d in dimension_totals:
-        avg = dimension_totals[d] / dimension_counts[d]
-        scores[d] = round(avg * 100, 2)
+    for dim in dimension_totals:
+        raw_avg = dimension_totals[dim] / dimension_counts[dim]
+
+        # Convert 1–5 to 0–100
+        normalized = (raw_avg - 1) / 4 * 100
+        scores[dim] = round(normalized)
 
     return scores
 
 
 # ============================================================
-# SCENARIO REFINEMENT ENGINE
+# ARCHETYPE MATCHING
 # ============================================================
 
-def apply_scenario_adjustments(scores, scenario_answers):
+def determine_archetype(scores, archetypes):
     """
-    Adjust scores based on scenario selections.
-    Each scenario adds a small-but-meaningful uplift to its dimension.
-
-    Parameters
-    ----------
-    scores : dict
-        {"thinking": 54.12, "execution": 71.22, ...}
-
-    scenario_answers : dict
-        {
-          "scenario_1": "thinking",
-          "scenario_2": "execution",
-          ...
-        }
-
-    Returns
-    -------
-    updated_scores : dict
-        Dimensions slightly boosted based on scenarios.
+    Determines the closest-matching archetype using Euclidean distance.
+    This version is SAFE:
+    - Skips invalid/missing signatures
+    - Skips archetypes missing dimensions
+    - Never crashes (returns fallback)
     """
 
-    # Global scenario influence weight (tunable)
-    ADJ = 3  # adds +3 per scenario (max capped at 100)
+    best_match = None
+    lowest_distance = float("inf")
 
-    for scenario_id, dim in scenario_answers.items():
-        if dim in scores:
-            scores[dim] = min(scores[dim] + ADJ, 100)
+    for archetype_name, data in archetypes.items():
 
-    return scores
+        # -- Validate the signature exists --
+        sig = data.get("signature")
+        if sig is None:
+            print(f"[WARNING] Archetype '{archetype_name}' missing signature → skipped")
+            continue
 
+        if not isinstance(sig, dict):
+            print(f"[WARNING] Archetype '{archetype_name}' has invalid signature format → skipped")
+            continue
 
-# ============================================================
-# ARCHETYPE MATCHING ENGINE
-# ============================================================
+        # -- Ensure all dimensions exist in the signature --
+        missing_dims = [dim for dim in scores if dim not in sig]
+        if missing_dims:
+            print(f"[WARNING] Archetype '{archetype_name}' missing dimensions: {missing_dims} → skipped")
+            continue
 
-def determine_archetype(scores, archetypes_data):
-    """
-    Match user dimension scores to archetypes using Euclidean distance.
+        # -- Compute Euclidean distance --
+        try:
+            distance = math.sqrt(sum((scores[d] - sig[d]) ** 2 for d in scores))
+        except Exception as e:
+            print(f"[ERROR] Archetype '{archetype_name}' distance calculation failed: {e}")
+            continue
 
-    Parameters
-    ----------
-    scores : dict
-        {"thinking": 70, "execution": 60, ...}
+        if distance < lowest_distance:
+            lowest_distance = distance
+            best_match = archetype_name
 
-    archetypes_data : dict
-        Format:
-        {
-          "Visionary": {
-              "signature": {
-                    "thinking": 90,
-                    "execution": 40,
-                    "risk": 80,
-                    "motivation": 70,
-                    "team": 50,
-                    "commercial": 40
-              },
-              "description": "...",
-              "strengths": [...],
-              "risks": [...],
-              "trl_affinity": "...",
-              "pathway_suggestions": [...],
-              "funding_strategy": [...],
-              "business_models": [...]
-          },
-          ...
-        }
+    # --------------------------------------------------------
+    # SAFETY FALLBACK — no matching archetype
+    # --------------------------------------------------------
+    if best_match is None:
+        print("[WARNING] No valid archetype matched. Returning fallback.")
+        return (
+            "Undefined Innovator",
+            {
+                "description": "Your profile does not match any predefined archetype. "
+                               "You may represent a new, emerging innovator identity.",
+                "strengths": [
+                    "Highly unconventional thinking",
+                    "Does not fit traditional innovator molds"
+                ],
+                "risks": [
+                    "Your unique profile needs more data to classify properly"
+                ]
+            }
+        )
 
-    Returns
-    -------
-    archetype_name : str
-    archetype_data : dict
-    """
-
-    best_name = None
-    best_distance = float("inf")
-    best_data = None
-
-    for name, data in archetypes_data.items():
-        sig = data["signature"]
-
-        # Compute Euclidean distance between user and archetype signature
-        dist_sq = 0
-        for dim in scores:
-            user_val = scores[dim]
-            target_val = sig.get(dim, 50)  # default neutral midpoint
-            dist_sq += (user_val - target_val) ** 2
-
-        distance = math.sqrt(dist_sq)
-
-        if distance < best_distance:
-            best_distance = distance
-            best_name = name
-            best_data = data
-
-    return best_name, best_data
-
-
-# ============================================================
-# OPTIONAL — UTILITIES FOR FUTURE FEATURES
-# ============================================================
-
-def normalise_signature(signature):
-    """
-    Convert a 0–100 archetype signature to a unit vector for
-    cosine similarity (optional expansion).
-    """
-    vals = list(signature.values())
-    magnitude = math.sqrt(sum(v * v for v in vals))
-    return {dim: v / magnitude for dim, v in signature.items()} if magnitude != 0 else signature
-
-
-def compare_similarity(user_scores, archetype_sig):
-    """
-    Cosine similarity between user profile and an archetype signature.
-    Not used in v1 (Euclidean is better for psychometric profiles),
-    but available for future analytics or radar-based scoring.
-    """
-    dot = sum(user_scores[d] * archetype_sig[d] for d in user_scores)
-    mag_user = math.sqrt(sum(v*v for v in user_scores.values()))
-    mag_arch = math.sqrt(sum(v*v for v in archetype_sig.values()))
-    if mag_user == 0 or mag_arch == 0:
-        return 0
-    return dot / (mag_user * mag_arch)
-
+    return best_match, archetypes[best_match]
