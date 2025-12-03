@@ -56,21 +56,27 @@ with tabs[0]:
     for i, q in enumerate(questions):
         st.markdown(f"""
         <div class='itype-question-card'>
-        <h3>{q["question"]}</h3>
+            <h3>{q["question"]}</h3>
         </div>
         """, unsafe_allow_html=True)
 
         key = f"q{i}"
+
+        # SAFE: avoid KeyError if labels missing
+        low_label = q.get("labels", {}).get("low", "Low")
+        high_label = q.get("labels", {}).get("high", "High")
+
         answers[q["question"]] = {
             "value": st.slider(
                 label="",
                 min_value=1, max_value=5, value=3,
-                help=f"1 = {q['labels']['low']}   •   5 = {q['labels']['high']}",
+                help=f"1 = {low_label}   •   5 = {high_label}",
                 key=key
             ),
             "dimension": q["dimension"],
             "reverse": q["reverse"]
         }
+
 
 # ============================================================
 # TAB 2 — SCENARIOS
