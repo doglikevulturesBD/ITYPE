@@ -417,12 +417,13 @@ elif step == 3:
 
     # ========================================================
    # ============================================================
-#   ARCHETYPE LIBRARY — CLEAN 3×3 GRID (POST-RESULTS ONLY)
-# ============================================================
+# ============================================
+# ARCHETYPE GRID WITH IMAGE TILES (3×3)
+# Folder: /data/archetype_images/
+# ============================================
 
 if st.session_state.get("has_results") and archetypes:
 
-    # Section Header
     st.markdown("<hr class='hr-neon'>", unsafe_allow_html=True)
     st.markdown("<h2 style='text-align:center;'>Explore All Archetypes</h2>", unsafe_allow_html=True)
     st.markdown(
@@ -430,48 +431,64 @@ if st.session_state.get("has_results") and archetypes:
         unsafe_allow_html=True,
     )
 
-    # Create the 3x3 tile grid
     cols = st.columns(3)
+
     for idx, (name, data) in enumerate(archetypes.items()):
         with cols[idx % 3]:
 
-            # Button for each tile  
-            clicked_tile = st.button(
-                name,
-                key=f"tile_{name}",
-                use_container_width=True,
+            # Full path to the image (exact match to archetype names)
+            img_path = f"data/archetype_images/{name}.png"
+
+            # Fallback if image missing
+            try:
+                open(img_path)
+            except:
+                img_path = "data/archetype_images/default.png"
+
+            # Beautiful neon tile button
+            tile_clicked = st.button(
+                f"""
+                <div class='arch-tile-wrapper'>
+                <img src='{img_path}' class='arch-img'>
+                <div class='arch-title'>{name}</div>
+                </div>
+                """,
+                key=f"arch_tile_{name}",
+                use_container_width=True
             )
 
-            # Toggle logic
-            if clicked_tile:
+            # Toggle open/close behavior
+            if tile_clicked:
                 if st.session_state.get("open_archetype") == name:
                     st.session_state["open_archetype"] = None
                 else:
                     st.session_state["open_archetype"] = name
 
-    # Expanded Details Panel
+    # ============================================
+    # EXPANDED PANEL FOR SELECTED ARCHETYPE
+    # ============================================
     selected = st.session_state.get("open_archetype")
-    if selected and selected in archetypes:
+    if selected:
         info = archetypes[selected]
 
         st.markdown(f"""
         <div class="archetype-panel">
         <h2 style="text-align:center;">{selected}</h2>
-        <p>{info.get("description", "")}</p>
+        <p>{info.get("description","")}</p>
 
         <h4>Strengths</h4>
-        <ul>{''.join([f"<li>{s}</li>" for s in info.get("strengths", [])])}</ul>
+        <ul>{''.join(f'<li>{s}</li>' for s in info.get('strengths',[]))}</ul>
 
         <h4>Risks</h4>
-        <ul>{''.join([f"<li>{r}</li>" for r in info.get("risks", [])])}</ul>
+        <ul>{''.join(f'<li>{r}</li>' for r in info.get('risks',[]))}</ul>
 
         <h4>Pathways</h4>
-        <ul>{''.join([f"<li>{p}</li>" for p in info.get("pathways", [])])}</ul>
+        <ul>{''.join(f'<li>{p}</li>' for p in info.get('pathways',[]))}</ul>
 
         <h4>Business Models</h4>
-        <ul>{''.join([f"<li>{bm}</li>" for bm in info.get("business_models", [])])}</ul>
+        <ul>{''.join(f'<li>{bm}</li>' for bm in info.get('business_models',[]))}</ul>
 
         <h4>Funding Strategy Fit</h4>
-        <ul>{''.join([f"<li>{fs}</li>" for fs in info.get("funding_strategy", [])])}</ul>
+        <ul>{''.join(f'<li>{fs}</li>' for fs in info.get('funding_strategy',[]))}</ul>
         </div>
         """, unsafe_allow_html=True)
