@@ -370,3 +370,50 @@ body, .main, .stApp {
 .scenario-spacer {
     height: 20px;
 }
+
+/* Archetype Tile Grid */
+.archetype-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 22px;
+    margin-top: 35px;
+}
+
+/* Archetype Card Base */
+.archetype-tile {
+    background: rgba(20, 28, 48, 0.55);
+    border: 1px solid rgba(0,255,255,0.18);
+    border-radius: 16px;
+    padding: 22px;
+    text-align: center;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: 0.25s ease;
+    box-shadow: 0 0 18px rgba(0,255,255,0.12);
+}
+
+.archetype-tile:hover {
+    transform: translateY(-6px) scale(1.03);
+    border-color: #4af3ff;
+    box-shadow: 0 0 25px rgba(0,255,255,0.35),
+                inset 0 0 22px rgba(120,60,255,0.25);
+}
+
+/* Archetype title inside tile */
+.archetype-tile h4 {
+    background: linear-gradient(90deg, #00eaff, #7a5cff, #ff4bf1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+}
+
+/* Expanded details section */
+.archetype-panel {
+    margin-top: 15px;
+    padding: 18px 22px;
+    background: rgba(10,14,25,0.6);
+    border-radius: 16px;
+    border: 1px solid rgba(0,255,255,0.15);
+    box-shadow: inset 0 0 15px rgba(0,255,255,0.15);
+}
