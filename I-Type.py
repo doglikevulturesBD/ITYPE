@@ -449,13 +449,13 @@ if st.session_state.get("has_results") and archetypes:
     # ============================================================
     selected = st.session_state["open_archetype"]
 
-    st.write("DEBUG selected:", selected)  # REMOVE LATER
+ 
 
     if selected is not None:
 
         img_path = f"data/archetype_images/{selected}.png"
 
-        st.write("DEBUG loading:", img_path)  # REMOVE LATER
+   
 
         # IMAGE
         st.image(img_path, use_column_width=True)
