@@ -418,16 +418,18 @@ elif step == 3:
     # ========================================================
    # ============================================================
 # ============================================
-# ARCHETYPE GRID WITH IMAGE TILES (3×3)
+# ============================================================
+# ARCHETYPE GRID WITH SIMPLE BUTTONS (3×3)
+# Image appears only inside expanded panel
 # Folder: /data/archetype_images/
-# ============================================
+# ============================================================
 
 if st.session_state.get("has_results") and archetypes:
 
     st.markdown("<hr class='hr-neon'>", unsafe_allow_html=True)
     st.markdown("<h2 style='text-align:center;'>Explore All Archetypes</h2>", unsafe_allow_html=True)
     st.markdown(
-    "<p style='opacity:0.85; text-align:center;'>Click a tile to reveal its profile.</p>",
+        "<p style='opacity:0.85; text-align:center;'>Click a tile to reveal its profile.</p>",
         unsafe_allow_html=True,
     )
 
@@ -436,41 +438,37 @@ if st.session_state.get("has_results") and archetypes:
     for idx, (name, data) in enumerate(archetypes.items()):
         with cols[idx % 3]:
 
-            # Full path to the image (exact match to archetype names)
-            img_path = f"data/archetype_images/{name}.png"
-
-            # Fallback if image missing
-            try:
-                open(img_path)
-            except:
-                img_path = "data/archetype_images/default.png"
-
-            # Beautiful neon tile button
+            # Clean simple button (NO images)
             tile_clicked = st.button(
-            f"""
-            <div class='arch-tile-wrapper'>
-            <img src='{img_path}' class='arch-img'>
-            <div class='arch-title'>{name}</div>
-            </div>
-            """,
-                key=f"arch_tile_{name}",
+                name,
+                key=f"arch_button_{name}",
                 use_container_width=True
             )
 
-            # Toggle open/close behavior
+            # Toggle behaviour
             if tile_clicked:
                 if st.session_state.get("open_archetype") == name:
                     st.session_state["open_archetype"] = None
                 else:
                     st.session_state["open_archetype"] = name
 
-    # ============================================
-    # EXPANDED PANEL FOR SELECTED ARCHETYPE
-    # ============================================
+    # ============================================================
+    # EXPANDED PANEL WITH IMAGE
+    # ============================================================
     selected = st.session_state.get("open_archetype")
     if selected:
         info = archetypes[selected]
 
+        # Path to image
+        img_path = f"data/archetype_images/{selected}.png"
+
+        # Show image if available
+        try:
+            st.image(img_path, use_column_width=True)
+        except:
+            st.warning("No image found for this archetype.")
+
+        # Details panel
         st.markdown(f"""
         <div class="archetype-panel">
         <h2 style="text-align:center;">{selected}</h2>
