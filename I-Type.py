@@ -8,7 +8,7 @@ from idix_engine import (
     combine_with_scenarios,
     determine_archetype,
     monte_carlo_probabilities,
-    compute_archetype_distances,  # optional, for future diagnostics
+    compute_archetype_distances,  # optional for future versions
 )
 
 # ============================================================
@@ -20,7 +20,7 @@ def load_css():
         with open("assets/styles.css") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     except FileNotFoundError:
-        st.warning("⚠ CSS file missing: assets/styles.css")
+        st.warning("⚠ Missing CSS file: assets/styles.css")
 
 load_css()
 
@@ -59,19 +59,21 @@ tabs = st.tabs(["🔍 Assessment", "🧪 Scenarios", "📊 Results"])
 
 with tabs[0]:
     st.markdown("<h2>Innovation Profile Questionnaire</h2>", unsafe_allow_html=True)
+
     answers = {}
 
     if not questions:
-        st.error("❌ No questions found. Check data/questions.json")
+        st.error("❌ No questions found. Check data/questions.json.")
     else:
         for i, q in enumerate(questions):
+
             text = q.get("question", f"Question {i+1}")
             dim = q.get("dimension", "thinking")
             reverse = q.get("reverse", False)
 
             st.markdown(f"""
             <div class='itype-question-card'>
-              <h3>{text}</h3>
+                <h3>{text}</h3>
             </div>
             """, unsafe_allow_html=True)
 
@@ -96,7 +98,6 @@ with tabs[0]:
 with tabs[1]:
     st.markdown("<h2>Scenario-Based Assessment</h2>", unsafe_allow_html=True)
 
-    # accumulate scenario mapping scores per dimension
     scenario_scores_accum = {
         "thinking": 0,
         "execution": 0,
@@ -108,16 +109,17 @@ with tabs[1]:
     scenario_count = 0
 
     if not scenarios:
-        st.error("❌ No scenarios found. Check data/scenarios.json")
+        st.error("❌ No scenarios found. Check data/scenarios.json.")
     else:
         for i, sc in enumerate(scenarios):
+
             title = sc.get("title", f"Scenario {i+1}")
             desc = sc.get("description", "No description provided.")
 
             st.markdown(f"""
             <div class='itype-scenario-card'>
-              <h3>{title}</h3>
-              <p>{desc}</p>
+                <h3>{title}</h3>
+                <p>{desc}</p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -130,7 +132,6 @@ with tabs[1]:
                 key=f"sc{i}"
             )
 
-            # mapping returns a vector across the 6 dimensions
             score_vec = mapping.get(choice, {
                 "thinking": 0, "execution": 0, "risk": 0,
                 "motivation": 0, "team": 0, "commercial": 0
@@ -141,17 +142,14 @@ with tabs[1]:
 
             scenario_count += 1
 
-    # average across scenarios (the engine will re-normalise)
-    if scenario_count > 0:
-        scenario_scores = {
-            k: scenario_scores_accum[k] / scenario_count
-            for k in scenario_scores_accum.keys()
-        }
-    else:
-        scenario_scores = scenario_scores_accum.copy()
+    scenario_scores = (
+        {k: scenario_scores_accum[k] / scenario_count for k in scenario_scores_accum}
+        if scenario_count > 0
+        else scenario_scores_accum.copy()
+    )
 
 # ============================================================
-# TAB 3 — RESULTS + IDENTITY SPECTRUM
+# TAB 3 — RESULTS
 # ============================================================
 
 with tabs[2]:
@@ -160,212 +158,175 @@ with tabs[2]:
     calc = st.button("🚀 Calculate My Innovator Type")
 
     if calc:
-        if not answers:
-            st.error("Please complete the questionnaire first.")
-        elif not archetypes:
-            st.error("Archetype definitions missing. Check data/archetypes.json")
-        else:
-            # ------------------------------------------------
-            # STEP 1 — NORMALISED QUESTION SCORES
-            # ------------------------------------------------
-            q_scores = normalize_scores(answers)
 
-            # ------------------------------------------------
-            # STEP 2 — COMBINE WITH SCENARIOS
-            # ------------------------------------------------
-            final_scores = combine_with_scenarios(q_scores, scenario_scores)
+        # ----------------------------------------------
+        # STEP 1 — Normalize questionnaire scores
+        # ----------------------------------------------
+        q_scores = normalize_scores(answers)
 
-            # ------------------------------------------------
-            # STEP 3 — PRIMARY ARCHETYPE
-            # ------------------------------------------------
-            primary_name, archetype_data = determine_archetype(final_scores, archetypes)
+        # ----------------------------------------------
+        # STEP 2 — Combine with scenario scores
+        # ----------------------------------------------
+        final_scores = combine_with_scenarios(q_scores, scenario_scores)
 
-            if primary_name is None or archetype_data is None:
-                st.error("Could not determine an archetype. Check configuration.")
-            else:
-                # Monte Carlo probabilities (identity spectrum)
-                probs, stability, shadow = monte_carlo_probabilities(final_scores, archetypes)
+        # ----------------------------------------------
+        # STEP 3 — Determine primary archetype
+        # ----------------------------------------------
+        primary_name, archetype_data = determine_archetype(final_scores, archetypes)
 
-                shadow_name, shadow_pct = shadow
+        if primary_name is None:
+            st.error("❌ Could not determine an archetype. Check config.")
+            st.stop()
 
-                # ---------------- HERO CARD -------------------
-                st.markdown(f"""
-                <div class='itype-result-card'>
-                  <h1>{primary_name}</h1>
-                  <p>{archetype_data.get("description", "")}</p>
-                  <div style="margin-top: 10px;">
-                    <b>Stability:</b> {stability:.1f}%  
-                    <br>
-                    <small>
-                      This is how often your profile remains {primary_name}  
-                      across 5000 small variations of your answers.
-                    </small>
-                  </div>
-                </div>
-                """, unsafe_allow_html=True)
+        # ----------------------------------------------
+        # STEP 4 — Monte Carlo identity spectrum
+        # ----------------------------------------------
+        probs, stability, shadow = monte_carlo_probabilities(final_scores, archetypes)
+        shadow_name, shadow_pct = shadow
 
-                # ---------------- TOP 2 TYPES -------------------
-                st.markdown("### Your Type Blend")
-                st.markdown(f"""
-                - 🏆 **Primary archetype:** **{primary_name}**  
-                  → Most likely identity across simulations.
-                - 🌘 **Shadow archetype:** **{shadow_name}** ({shadow_pct:.1f}%)  
-                  → The next most likely identity you tilt into when your context or answers shift slightly.
-                """)
-                
-                # ------------------------------------------------
-                # STEP 4 — RADAR CHART (CORE DIMENSIONS)
-                # ------------------------------------------------
-                st.markdown("### Your Core Innovation Dimensions")
+        # ----------------------------------------------
+        # HERO CARD
+        # ----------------------------------------------
+        st.markdown(f"""
+        <div class='itype-result-card'>
+            <h1>{primary_name}</h1>
+            <p>{archetype_data.get("description", "")}</p>
+            <div style="margin-top: 10px;">
+                <b>Stability:</b> {stability:.1f}%  
+                <br>
+                <small>
+                    Shows how consistently your results remain <b>{primary_name}</b>
+                    across 5000 micro-variations.
+                </small>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
-                dims = list(final_scores.keys())
-                vals = list(final_scores.values())
+        # ----------------------------------------------
+        # TYPE BLEND
+        # ----------------------------------------------
+        st.markdown("### Your Type Blend")
+        st.markdown(f"""
+        - 🏆 **Primary archetype:** **{primary_name}**
+        - 🌘 **Shadow archetype:** **{shadow_name}** ({shadow_pct:.1f}%)
+        """)
 
-                radar_fig = go.Figure()
-                radar_fig.add_trace(go.Scatterpolar(
-                    r=vals + [vals[0]],
-                    theta=dims + [dims[0]],
-                    fill='toself',
-                    line_color='#00eaff',
-                    name="Your profile"
-                ))
+        # ----------------------------------------------
+        # RADAR CHART
+        # ----------------------------------------------
+        st.markdown("### Core Innovation Dimensions")
+        dims = list(final_scores.keys())
+        vals = list(final_scores.values())
 
-                radar_fig.update_layout(
-                    polar=dict(
-                        radialaxis=dict(visible=True, range=[0, 100]),
-                        bgcolor='rgba(10,14,25,0.55)'
-                    ),
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e5f4ff'),
-                    showlegend=False
-                )
+        radar = go.Figure()
+        radar.add_trace(go.Scatterpolar(
+            r=vals + [vals[0]],
+            theta=dims + [dims[0]],
+            fill='toself',
+            line_color='#00eaff'
+        ))
+        radar.update_layout(
+            polar=dict(radialaxis=dict(visible=True, range=[0, 100])),
+            paper_bgcolor='rgba(0,0,0,0)',
+            showlegend=False
+        )
+        st.plotly_chart(radar, use_container_width=True)
 
-                st.plotly_chart(radar_fig, use_container_width=True)
+        # ----------------------------------------------
+        # IDENTITY SPECTRUM (bar chart)
+        # ----------------------------------------------
+        st.markdown("### Identity Spectrum — Probability Across All Archetypes")
 
-                # ------------------------------------------------
-                # STEP 5 — IDENTITY SPECTRUM (ALL ARCHETYPES)
-                # ------------------------------------------------
-                st.markdown("### Identity Spectrum — Archetype Probabilities")
+        sorted_probs = sorted(probs.items(), key=lambda x: x[1], reverse=True)
+        arche_names = [p[0] for p in sorted_probs]
+        arche_values = [p[1] for p in sorted_probs]
 
-                # sort probabilities descending
-                sorted_probs = sorted(probs.items(), key=lambda x: x[1], reverse=True)
-                arche_names = [p[0] for p in sorted_probs]
-                arche_values = [p[1] for p in sorted_probs]
+        spectrum = go.Figure()
+        spectrum.add_trace(go.Bar(
+            x=arche_names,
+            y=arche_values,
+            marker_color='#00eaff'
+        ))
+        spectrum.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            yaxis_title="Probability (%)",
+        )
+        st.plotly_chart(spectrum, use_container_width=True)
 
-                spectrum_fig = go.Figure()
-                spectrum_fig.add_trace(go.Bar(
-                    x=arche_names,
-                    y=arche_values,
-                    marker_color='#00eaff'
-                ))
-                spectrum_fig.update_layout(
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color='#e5f4ff'),
-                    yaxis_title="Probability (%)",
-                    xaxis_title="Archetype",
-                )
+        # ----------------------------------------------
+        # HEATMAP (CORRECTED)
+        # ----------------------------------------------
+        st.markdown("### 🔥 Identity Heatmap")
 
-                st.plotly_chart(spectrum_fig, use_container_width=True)
+        heat_archetypes = [
+            ["Visionary", "Strategist", "Storyteller"],
+            ["Catalyst", "Apex Innovator", "Integrator"],
+            ["Engineer", "Operator", "Experimenter"]
+        ]
 
-                st.markdown("""
-                <p style="font-size: 0.9rem; opacity: 0.8;">
-                This chart shows how your profile distributes across all 9 archetypes  
-                over 5000 simulated variations of your answers.  
-                Your primary and shadow archetypes are simply the top two bars.
-                </p>
-                """, unsafe_allow_html=True)
+        heat_values = [
+            [probs.get(a, 0) for a in row]
+            for row in heat_archetypes
+        ]
 
+        heat_fig = go.Figure(data=go.Heatmap(
+            z=heat_values,
+            x=heat_archetypes[0],
+            y=["Row 1", "Row 2", "Row 3"],
+            colorscale="blues",
+            text=[[f"{a}: {probs.get(a,0):.1f}%" for a in row] for row in heat_archetypes],
+            hoverinfo="text",
+        ))
 
-                # ============================================================
-# IDENTITY HEATMAP (VERSION 1)
-# ============================================================
-st.markdown("### 🔥 Identity Heatmap")
+        heat_fig.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(color="#e5f4ff"),
+            title="Archetype Probability Heatmap"
+        )
 
-# Create a 3×3 heatmap grid of archetypes in a stable order
-heat_archetypes = [
-    ["Visionary",     "Strategist",      "Storyteller"],
-    ["Catalyst",      "Apex Innovator",  "Integrator"],
-    ["Engineer",      "Operator",        "Experimenter"]
-]
+        st.plotly_chart(heat_fig, use_container_width=True)
 
-# Build a matrix of probabilities in the same shape
-heat_values = [
-    [probs.get(a, 0) for a in row]
-    for row in heat_archetypes
-]
+        st.markdown("""
+        <p style='font-size: 0.9rem; opacity: 0.8;'>
+        The heatmap shows your identity cluster. Darker = stronger identity signal.
+        </p>
+        """, unsafe_allow_html=True)
 
-heat_fig = go.Figure(data=go.Heatmap(
-    z=heat_values,
-    x=heat_archetypes[0],
-    y=["Row 1", "Row 2", "Row 3"],
-    colorscale="blues",
-    hoverongaps=False,
-    text=[[f"{a}: {probs.get(a,0):.1f}%" for a in row] for row in heat_archetypes],
-    hoverinfo="text",
-))
+        # ----------------------------------------------
+        # DETAILED BREAKDOWN
+        # ----------------------------------------------
+        st.markdown("<hr><h2>Your Innovator Breakdown</h2>", unsafe_allow_html=True)
 
-heat_fig.update_layout(
-    title="Archetype Probability Heatmap",
-    xaxis=dict(title="Archetypes"),
-    yaxis=dict(showticklabels=False),
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(color="#e5f4ff")
-)
+        st.markdown("<h3>Strengths</h3>", unsafe_allow_html=True)
+        for s in archetype_data.get("strengths", []):
+            st.markdown(f"<div class='itype-strength-card'>• {s}</div>", unsafe_allow_html=True)
 
-st.plotly_chart(heat_fig, use_container_width=True)
+        st.markdown("<h3 style='margin-top:20px;'>Growth Edges & Risks</h3>", unsafe_allow_html=True)
+        for r in archetype_data.get("risks", []):
+            st.markdown(f"<div class='itype-risk-card'>• {r}</div>", unsafe_allow_html=True)
 
-st.markdown("""
-<p style='font-size: 0.9rem; opacity: 0.8;'>
-The heatmap shows a visual distribution of your probabilities across all 9 archetypes.
-Darker colours indicate higher likelihood clusters.
-This helps you understand whether your identity is concentrated or spread across styles.
-</p>
-""", unsafe_allow_html=True)
+        st.markdown("<h3 style='margin-top:20px;'>Recommended Innovation Pathways</h3>", unsafe_allow_html=True)
+        for p in archetype_data.get("pathways", []):
+            st.markdown(f"<div class='itype-pathway-card'>• {p}</div>", unsafe_allow_html=True)
 
+        st.markdown("<h3 style='margin-top:20px;'>Suggested Business Models</h3>", unsafe_allow_html=True)
+        for bm in archetype_data.get("business_models", []):
+            st.markdown(f"<div class='itype-business-card'>• {bm}</div>", unsafe_allow_html=True)
 
-                # ------------------------------------------------
-                # STEP 6 — DETAILED BREAKDOWN FOR PRIMARY ARCHETYPE
-                # ------------------------------------------------
-                st.markdown("<hr>", unsafe_allow_html=True)
-                st.markdown("<h2>Your Innovator Breakdown</h2>", unsafe_allow_html=True)
+        st.markdown("<h3 style='margin-top:20px;'>Funding Strategy Fit</h3>", unsafe_allow_html=True)
+        for fs in archetype_data.get("funding_strategy", []):
+            st.markdown(f"<div class='itype-funding-card'>• {fs}</div>", unsafe_allow_html=True)
 
-                # Strengths
-                st.markdown("<h3>Strengths</h3>", unsafe_allow_html=True)
-                for s in archetype_data.get("strengths", []):
-                    st.markdown(f"<div class='itype-strength-card'>• {s}</div>", unsafe_allow_html=True)
+        # ----------------------------------------------
+        # EXPLAINER
+        # ----------------------------------------------
+        st.markdown("<hr><h3>How to Interpret Your Results</h3>", unsafe_allow_html=True)
+        st.markdown("""
+        - **Stability %** — how consistent your identity is across 5000 simulations.  
+        - **Shadow archetype** — second-strongest identity.  
+        - **Identity spectrum** — distribution across all archetypes.  
+        - **Heatmap** — identity clustering across 3×3 matrix.  
+        - **Radar chart** — your core cognitive–behavioural innovation traits.
+        """)
 
-                # Risks
-                st.markdown("<h3 style='margin-top:20px;'>Growth Edges & Risks</h3>", unsafe_allow_html=True)
-                for r in archetype_data.get("risks", []):
-                    st.markdown(f"<div class='itype-risk-card'>• {r}</div>", unsafe_allow_html=True)
-
-                # Pathways
-                st.markdown("<h3 style='margin-top:20px;'>Recommended Innovation Pathways</h3>", unsafe_allow_html=True)
-                for pth in archetype_data.get("pathways", []):
-                    st.markdown(f"<div class='itype-pathway-card'>• {pth}</div>", unsafe_allow_html=True)
-
-                # Business models
-                st.markdown("<h3 style='margin-top:20px;'>Suggested Business Models</h3>", unsafe_allow_html=True)
-                for bm in archetype_data.get("business_models", []):
-                    st.markdown(f"<div class='itype-business-card'>• {bm}</div>", unsafe_allow_html=True)
-
-                # Funding strategy
-                st.markdown("<h3 style='margin-top:20px;'>Funding Strategy Fit</h3>", unsafe_allow_html=True)
-                for fs in archetype_data.get("funding_strategy", []):
-                    st.markdown(f"<div class='itype-funding-card'>• {fs}</div>", unsafe_allow_html=True)
-
-                # ------------------------------------------------
-                # OPTIONAL EXPLANER — HOW TO READ THIS
-                # ------------------------------------------------
-                st.markdown("<hr>", unsafe_allow_html=True)
-                st.markdown("### How to Read Your Results")
-                st.markdown("""
-                - **Stability %** — How often you remain in your primary archetype across 5000 simulated variations.  
-                - **Shadow archetype** — The second-strongest identity that you shift into under small changes.  
-                - **Identity spectrum** — Shows how much of each archetype lives in your profile.  
-                - **Radar chart** — Your core innovation traits on a 0–100 scale (thinking, execution, risk, motivation, team, commercial).
-                """)
-    else:
-        st.info("Complete the questionnaire and scenarios, then click **Calculate My Innovator Type** to see your full profile.")
