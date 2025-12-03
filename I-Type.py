@@ -45,11 +45,16 @@ scenarios = load_json("data/scenarios.json", default=[])
 # ============================================================
 
 st.markdown("""
-<div class='itype-container'>
-  <h1>I-TYPE — Innovator Type Assessment</h1>
-  <p class='subtitle'>Powered by the Innovator DNA Index™</p>
+<div class="hero">
+<div class="hero-glow"></div>
+<div class="hero-particles"></div>
+<div class="hero-content">
+<h1 class="hero-title">I-TYPE — Innovator Type Assessment</h1>
+<p class="hero-sub">Powered by the Innovator DNA Index™</p>
+</div>
 </div>
 """, unsafe_allow_html=True)
+
 
 tabs = st.tabs(["🔍 Assessment", "🧪 Scenarios", "📊 Results", "DEV"])
 
