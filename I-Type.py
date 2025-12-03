@@ -45,6 +45,7 @@ scenarios = load_json("data/scenarios.json", default=[])
 # ============================================================
 
 st.markdown("""
+<div class="hero-wrapper">
 <div class="hero">
 <div class="hero-glow"></div>
 <div class="hero-particles"></div>
@@ -53,7 +54,9 @@ st.markdown("""
 <p class="hero-sub">Powered by the Innovator DNA Index™</p>
 </div>
 </div>
+</div>
 """, unsafe_allow_html=True)
+
 
 
 tabs = st.tabs(["🔍 Assessment", "🧪 Scenarios", "📊 Results", "DEV"])
