@@ -323,51 +323,75 @@ elif step == 3:
 
 # ============================================================
 # ============================================================
-# ARCHETYPE LIBRARY — CLEAN 3×3 TILE GRID (FIXED HTML)
+# ARCHETYPE LIBRARY — CLEAN 3×3 GRID WITH REAL CLICKABLE TILES
 # ============================================================
+
+import uuid
 
 st.markdown("<hr class='hr-neon'><h2>Explore All Archetypes</h2>", unsafe_allow_html=True)
 st.markdown("<p style='opacity:0.85;'>Click a tile to open its full details.</p>", unsafe_allow_html=True)
 
-# Track which archetype is open
 if "open_archetype" not in st.session_state:
     st.session_state["open_archetype"] = None
 
-# --- Render a clean 3×3 grid of neon tiles ----------------------------------
+# --- Render Grid -------------------------------------------------------------
 
 cols = st.columns(3)
 
-archetype_names = list(archetypes.keys())
-
-for idx, name in enumerate(archetype_names):
-    col = cols[idx % 3]
+for index, (name, data) in enumerate(archetypes.items()):
+    col = cols[index % 3]
 
     with col:
-        tile_key = f"arch_tile_{name}"
+        tile_id = f"tile-{uuid.uuid4()}"  # unique ID for JS event
+
         is_active = (st.session_state["open_archetype"] == name)
-
-        # Render tile using pure HTML inside st.button container
-        if st.button(
-            label=" ",  # invisible button text
-            key=tile_key,
-            help=f"Open details for {name}",
-            use_container_width=True
-        ):
-            st.session_state["open_archetype"] = name if not is_active else None
-
-        # The HTML tile on top of the invisible button
         tile_class = "archetype-tile active" if is_active else "archetype-tile"
 
+        # Render clickable HTML tile
         st.markdown(
             f"""
-            <div class="{tile_class}">
+            <div id="{tile_id}" class="{tile_class}">
                 <h4>{name}</h4>
             </div>
+
+            <script>
+            const tile = document.getElementById("{tile_id}");
+            tile.onclick = function() {{
+                const streamlitSend = window.parent.postMessage
+                    ? window.parent.postMessage
+                    : window.top.postMessage;
+                streamlitSend({{"clicked_tile": "{name}"}}, "*");
+            }};
+            </script>
             """,
-            unsafe_allow_html=True,
+            unsafe_allow_html=True
         )
 
-# --- Expanded Panel -----------------------------------------------------------
+# --- Capture JS → Streamlit click event -------------------------------------
+
+clicked = st.experimental_get_query_params().get("clicked_tile")
+
+# Fallback JS → Python callback 
+st.markdown("""
+<script>
+window.addEventListener("message", (event) => {
+    if (event.data.clicked_tile) {
+        const tile = event.data.clicked_tile;
+        const url = new URL(window.location);
+        url.searchParams.set("clicked_tile", tile);
+        window.location.href = url.toString();
+    }
+});
+</script>
+""", unsafe_allow_html=True)
+
+if clicked:
+    selected = clicked[0]
+    st.session_state["open_archetype"] = (
+        None if st.session_state["open_archetype"] == selected else selected
+    )
+
+# --- Expanded Panel ---------------------------------------------------------
 
 if st.session_state["open_archetype"]:
     a = st.session_state["open_archetype"]
@@ -375,34 +399,22 @@ if st.session_state["open_archetype"]:
 
     st.markdown(f"""
     <div class="archetype-panel">
-
-    <h2 style="text-align:center; margin-bottom:10px;">{a}</h2>
+    <h2 style="text-align:center;">{a}</h2>
     <p>{info.get("description","")}</p>
 
     <h4>Strengths</h4>
-    <ul>
-    {''.join([f'<li>{s}</li>' for s in info.get("strengths", [])])}
-    </ul>
+    <ul>{''.join([f"<li>{s}</li>" for s in info.get("strengths",[])])}</ul>
 
     <h4>Risks</h4>
-    <ul>
-    {''.join([f'<li>{r}</li>' for r in info.get("risks", [])])}
-    </ul>
+    <ul>{''.join([f"<li>{r}</li>" for r in info.get("risks",[])])}</ul>
 
     <h4>Pathways</h4>
-    <ul>
-    {''.join([f'<li>{p}</li>' for p in info.get("pathways", [])])}
-    </ul>
+    <ul>{''.join([f"<li>{p}</li>" for p in info.get("pathways",[])])}</ul>
 
     <h4>Business Models</h4>
-    <ul>
-    {''.join([f'<li>{bm}</li>' for bm in info.get("business_models", [])])}
-    </ul>
+    <ul>{''.join([f"<li>{bm}</li>" for bm in info.get("business_models",[])])}</ul>
 
     <h4>Funding Strategy</h4>
-    <ul>
-    {''.join([f'<li>{fs}</li>' for fs in info.get("funding_strategy", [])])}
-    </ul>
-
+    <ul>{''.join([f"<li>{fs}</li>" for fs in info.get("funding_strategy",[])])}</ul>
     </div>
     """, unsafe_allow_html=True)
