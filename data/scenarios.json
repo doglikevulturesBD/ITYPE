@@ -1,0 +1,102 @@
+[
+  {
+    "id": "scenario_1",
+    "scenario": "You are given R10,000 and one week to test a new idea. What do you do first?",
+    "options": {
+      "Run quick user interviews": "commercial",
+      "Build a scrappy prototype immediately": "execution",
+      "Map long-term future implications and trends": "thinking",
+      "Launch a bold, risky micro-experiment": "risk"
+    }
+  },
+  {
+    "id": "scenario_2",
+    "scenario": "A project stalls because two key stakeholders strongly disagree. You:",
+    "options": {
+      "Facilitate a structured alignment session": "team",
+      "Prototype both directions quickly": "execution",
+      "Analyse data to determine the best route": "commercial",
+      "Reframe the entire problem from scratch": "thinking"
+    }
+  },
+  {
+    "id": "scenario_3",
+    "scenario": "You must pitch a new product direction tomorrow with almost no prep time. You:",
+    "options": {
+      "Create a visionary future narrative": "thinking",
+      "Build a storyboard prototype overnight": "execution",
+      "Gather whatever data you can to validate": "commercial",
+      "Propose a radically different direction": "risk"
+    }
+  },
+  {
+    "id": "scenario_4",
+    "scenario": "Your team keeps missing deadlines due to unclear responsibilities. You:",
+    "options": {
+      "Define roles and build structure": "execution",
+      "Run a collaborative problem-solving workshop": "team",
+      "Analyse the workflow to diagnose bottlenecks": "commercial",
+      "Encourage experimentation with new processes": "risk"
+    }
+  },
+  {
+    "id": "scenario_5",
+    "scenario": "You receive unexpected negative feedback about your prototype. You:",
+    "options": {
+      "Use the feedback to refine and iterate": "execution",
+      "Run deeper user research to understand root causes": "commercial",
+      "Pivot the idea boldly based on intuition": "risk",
+      "Reframe the problem through a new conceptual lens": "thinking"
+    }
+  },
+  {
+    "id": "scenario_6",
+    "scenario": "You join a new team where the culture is very different from your usual environment. You:",
+    "options": {
+      "Adapt and blend into existing workflows": "team",
+      "Introduce structured systems to improve clarity": "execution",
+      "Pitch big creative concepts to inspire the team": "thinking",
+      "Propose bold new ways of working": "risk"
+    }
+  },
+  {
+    "id": "scenario_7",
+    "scenario": "You’re asked to evaluate a new technology with minimal information. You:",
+    "options": {
+      "Conduct a rapid desk research validation": "commercial",
+      "Prototype a small test environment": "execution",
+      "Explore future scenarios where it may matter": "thinking",
+      "Make an intuitive judgment call": "risk"
+    }
+  },
+  {
+    "id": "scenario_8",
+    "scenario": "In a brainstorm session, the group runs out of ideas. You:",
+    "options": {
+      "Suggest structured ideation techniques": "team",
+      "Propose unusual, high-risk concepts": "risk",
+      "Reframe the problem or constraints": "thinking",
+      "Look for user or market data to spark direction": "commercial"
+    }
+  },
+  {
+    "id": "scenario_9",
+    "scenario": "Your prototype performs poorly in the first field test. You:",
+    "options": {
+      "Break it down and rebuild a cleaner version": "execution",
+      "Double down and run more field tests": "risk",
+      "Reassess problem–solution fit through research": "commercial",
+      "Explore alternative concept directions": "thinking"
+    }
+  },
+  {
+    "id": "scenario_10",
+    "scenario": "A team member proposes a radical idea that contradicts your current approach. You:",
+    "options": {
+      "Evaluate it calmly with structured criteria": "commercial",
+      "Prototype both options and compare results": "execution",
+      "Explore the idea's long-term implications": "thinking",
+      "Champion the radical idea and run with it": "risk"
+    }
+  }
+]
