@@ -33,7 +33,7 @@ load_css()
 
 
 # ============================================================
-# LOAD JSON
+# LOAD JSON FILES
 # ============================================================
 
 def load_json(path, default=None):
@@ -55,12 +55,12 @@ scenarios = load_json("data/scenarios.json", default=[])
 st.markdown("""
 <div class="hero-wrapper">
 <div class="hero">
-<div class="hero-glow"></div>
-<div class="hero-particles"></div>
-<div class="hero-content">
-<h1 class="hero-title">I-TYPE — Innovator Type Assessment</h1>
-<p class="hero-sub">Powered by the Innovator DNA Index™</p>
-</div>
+    <div class="hero-glow"></div>
+    <div class="hero-particles"></div>
+    <div class="hero-content">
+        <h1 class="hero-title">I-TYPE — Innovator Type Assessment</h1>
+        <p class="hero-sub">Powered by the Innovator DNA Index™</p>
+    </div>
 </div>
 </div>
 """, unsafe_allow_html=True)
@@ -81,7 +81,6 @@ tab_assess, tab_scenario, tab_results, tab_dev = st.tabs(
 
 with tab_assess:
 
-    # If user switched tabs, stop rendering this tab
     if st.session_state["active_tab"] != "assessment":
         st.stop()
 
@@ -111,8 +110,9 @@ with tab_assess:
             }
 
     # --------------------------------------------------------
-    # NAVIGATION BUTTONS
+    # FOOTER NAVIGATION BUTTONS
     # --------------------------------------------------------
+
     st.markdown("<br>", unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
@@ -120,12 +120,12 @@ with tab_assess:
     with col1:
         if st.button("➡ Go to Scenarios"):
             st.session_state["active_tab"] = "scenarios"
-            st.experimental_rerun()
+            st.rerun()
 
     with col2:
         if st.button("📊 Skip to Results"):
             st.session_state["active_tab"] = "results"
-            st.experimental_rerun()
+            st.rerun()
 
 
 # ============================================================
@@ -176,9 +176,10 @@ with tab_scenario:
         for k in scenario_scores_accum
     }
 
+    # NAVIGATION
     st.markdown("<br>", unsafe_allow_html=True)
 
-    if st.button("📊 See Results"):
+    if st.button("📊 View Results"):
         st.session_state["active_tab"] = "results"
         st.rerun()
 
@@ -194,13 +195,16 @@ with tab_results:
 
     st.markdown("<h2>Your Innovation Profile</h2>", unsafe_allow_html=True)
 
-    if st.button("🚀 Calculate My Innovator Type"):
+    calc = st.button("🚀 Calculate My Innovator Type")
+
+    if calc:
 
         q_scores = normalize_scores(answers)
         final_scores = combine_with_scenarios(q_scores, scenario_scores)
-        primary_name, archetype_data = determine_archetype(final_scores, archetypes)
 
+        primary_name, archetype_data = determine_archetype(final_scores, archetypes)
         probs, stability, shadow = monte_carlo_probabilities(final_scores, archetypes)
+
         shadow_name, shadow_pct = shadow
 
         # ----------------------------------------------------
@@ -215,7 +219,7 @@ with tab_results:
         """, unsafe_allow_html=True)
 
         # ----------------------------------------------------
-        # RADAR
+        # RADAR CHART
         # ----------------------------------------------------
         st.markdown("<div class='itype-chart-box'>", unsafe_allow_html=True)
 
@@ -229,6 +233,7 @@ with tab_results:
             fill='toself',
             line_color='#00eaff'
         ))
+
         radar.update_layout(
             polar=dict(radialaxis=dict(visible=True, range=[0,100])),
             paper_bgcolor='rgba(0,0,0,0)',
@@ -239,7 +244,7 @@ with tab_results:
         st.markdown("</div>", unsafe_allow_html=True)
 
         # ----------------------------------------------------
-        # IDENTITY SPECTRUM
+        # IDENTITY SPECTRUM BAR CHART
         # ----------------------------------------------------
         sorted_probs = sorted(probs.items(), key=lambda x: x[1], reverse=True)
 
@@ -250,15 +255,14 @@ with tab_results:
             y=[p[1] for p in sorted_probs],
             marker_color="#00eaff"
         ))
-        fig.update_layout(
-            paper_bgcolor='rgba(0,0,0,0)'
-        )
         st.plotly_chart(fig, use_container_width=True)
+
         st.markdown("</div>", unsafe_allow_html=True)
 
         # ----------------------------------------------------
-        # HEATMAP (NEON GRID)
+        # HEATMAP (3×3 identity matrix)
         # ----------------------------------------------------
+
         heat_grid = [
             ["Visionary", "Strategist", "Storyteller"],
             ["Catalyst", "Apex Innovator", "Integrator"],
@@ -295,11 +299,11 @@ with tab_results:
 with tab_dev:
 
     st.markdown("<div class='dev-box'>", unsafe_allow_html=True)
-
-    st.write("Run random simulations to test archetype distributions.")
+    st.write("Developer Simulation — 5000 randomised profiles.")
 
     if st.button("Run 5000 Simulation"):
         import random
+
         counts = {k: 0 for k in archetypes}
 
         for _ in range(5000):
