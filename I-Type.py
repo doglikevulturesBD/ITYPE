@@ -188,7 +188,8 @@ if step == 1:
 
 
 # ============================================================
-# STEP 2 — SCENARIOS
+# ============================================================
+# STEP 2 — SCENARIOS (Improved UX with Tiles)
 # ============================================================
 
 elif step == 2:
@@ -197,25 +198,37 @@ elif step == 2:
         st.error("❌ No scenarios found. Check data/scenarios.json.")
     else:
         for i, sc in enumerate(scenarios):
+
             title = sc.get("title", f"Scenario {i+1}")
             desc = sc.get("description", "No description provided.")
             options = sc.get("options", [])
 
+            # ----------------------------------------------
+            # Beautiful Scenario Tile
+            # ----------------------------------------------
             st.markdown(f"""
-            <div class='itype-scenario-card'>
-                <h3>{title}</h3>
-                <p>{desc}</p>
+            <div class='itype-question-card' style='margin-top: 25px;'>
+                <h3 style='font-size: 1.4rem; margin-bottom: 6px;'>{title}</h3>
+                <p style='opacity: 0.85; margin-bottom: 18px;'>{desc}</p>
+
+                <div class='scenario-answer-box'>
+                    <label style='font-weight: 600; font-size: 1rem;'>
+                        Select your response:
+                    </label>
+                </div>
             </div>
             """, unsafe_allow_html=True)
 
+            # The actual selectbox directly below the tile
             st.selectbox(
-                "Choose your response:",
+                "",
                 options,
-                key=f"sc_{i}"
+                key=f"sc_{i}",
             )
 
-    st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
 
+    # Navigation
     col1, col2, col3 = st.columns([1, 1, 1])
 
     with col1:
@@ -227,6 +240,7 @@ elif step == 2:
         if st.button("Next ➜ See Results"):
             st.session_state["step"] = 3
             st.rerun()
+
 
 
 # ============================================================
