@@ -344,3 +344,29 @@ body, .main, .stApp {
     margin-bottom: 5px;
     backdrop-filter: blur(6px);
 }
+
+/* Scenario card wrapper */
+.scenario-card {
+    background: rgba(20, 28, 48, 0.55);
+    border: 1px solid rgba(0,255,255,0.15);
+    padding: 22px 28px;
+    border-radius: 16px 16px 0px 0px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 18px rgba(0,255,255,0.08);
+}
+
+/* Selectbox block that attaches to the scenario card */
+.scenario-selectbox {
+    background: rgba(0,255,255,0.06);
+    border: 1px solid rgba(0,255,255,0.18);
+    border-top: none;
+    padding: 15px 20px;
+    border-radius: 0px 0px 16px 16px;
+    margin-top: -10px;  /* pulls seamlessly under the card */
+    backdrop-filter: blur(6px);
+}
+
+/* Space between tiles */
+.scenario-spacer {
+    height: 20px;
+}
