@@ -190,5 +190,43 @@
     "pathways": ["TRL 3–7", "Stakeholder management"],
     "business_models": ["Community-led", "Narrative-driven"],
     "funding_strategy": ["Pitch competitions", "Crowdfunding"]
+  },
+
+  "Apex Innovator": {
+    "description": "You combine exceptional creativity, execution strength, commercial intuition, and resilience. You operate at the apex of innovation capability: fast, adaptable, and deeply strategic.",
+    "signature": {
+      "thinking": 90,
+      "execution": 92,
+      "risk": 78,
+      "motivation": 90,
+      "team": 82,
+      "commercial": 85
+    },
+    "strengths": [
+      "Elite-level creative and analytical ability",
+      "Rapid execution and powerful learning agility",
+      "Strong commercial judgement and opportunity sensing",
+      "High adaptability and resilience under uncertainty"
+    ],
+    "risks": [
+      "May overcommit or push too hard",
+      "May become impatient with slower processes or teams",
+      "Can assume others keep pace without checking alignment"
+    ],
+    "pathways": [
+      "High-performance ventures",
+      "TRL 5–9 scaling environments",
+      "Innovation leadership roles"
+    ],
+    "business_models": [
+      "Hybrid innovation systems",
+      "Platform ecosystems",
+      "Value-stack scaling models"
+    ],
+    "funding_strategy": [
+      "Venture capital",
+      "Growth equity",
+      "Strategic partnerships"
+    ]
   }
 }
