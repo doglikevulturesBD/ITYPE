@@ -350,13 +350,13 @@ if "has_results" in st.session_state and st.session_state["has_results"]:
 
             # Invisible yet fully clickable button wrapper
             clicked = st.button(
-                label=f"""
-                <div class="{tile_class}">
-                <h4>{name}</h4>
-                </div>
-                """,
-                key=f"arche_btn_{name}",
-                use_container_width=True
+            label=f"""
+            <div class="{tile_class}">
+            <h4>{name}</h4>
+            </div>
+            """,
+            key=f"arche_btn_{name}",
+            use_container_width=True
             )
 
             # Force streamlit button to be invisible
