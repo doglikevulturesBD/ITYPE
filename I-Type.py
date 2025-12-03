@@ -34,15 +34,15 @@ load_css()
 # ============================================================
 st.markdown("""
 <div class='itype-container'>
-    <h1>I-TYPE — Innovator Type Assessment</h1>
-    <p class='subtitle'>Powered by the IDIX™ — Innovator DNA Index</p>
+<h1>I-TYPE — Innovator Type Assessment</h1>
+<p class='subtitle'>Powered by the IDIX™ — Innovator DNA Index</p>
 </div>
 """, unsafe_allow_html=True)
 
 st.write("")
 
 # ============================================================
-# CREATE TABS
+# TAB SETUP
 # ============================================================
 tab1, tab2, tab3 = st.tabs(["📘 Questionnaire", "🎭 Scenarios", "📊 Results"])
 
@@ -55,17 +55,40 @@ with tab1:
     q_answers = {}
 
     for i, q in enumerate(questions_data):
+
+        # --- Card wrapper ---
         st.markdown(f"""
-            <div class='itype-question-card'>
-                <h3>{q['question']}</h3>
-            </div>
+        <div class='itype-question-card'>
+        <h3>{q['question']}</h3>
+        </div>
         """, unsafe_allow_html=True)
 
-        answer = st.slider(
-            label="",
-            min_value=1, max_value=5, value=3,
-            key=f"q{i}"
-        )
+        # --- Brand-colour slider labels ---
+        cols = st.columns([1, 6, 1])
+
+        with cols[0]:
+            st.markdown(
+                "<div style='text-align:center; color:#00eaff; opacity:0.85;'>"
+                "1<br><small>Disagree</small></div>",
+                unsafe_allow_html=True
+            )
+
+        with cols[1]:
+            answer = st.slider(
+                label="",
+                min_value=1,
+                max_value=5,
+                value=3,
+                key=f"q{i}",
+                help="1 = Disagree · 5 = Agree"
+            )
+
+        with cols[2]:
+            st.markdown(
+            "<div style='text-align:center; color:#ff4bf1; opacity:0.85;'>"
+            "5<br><small>Agree</small></div>",
+                unsafe_allow_html=True
+            )
 
         q_answers[q["id"]] = {
             "value": answer,
@@ -77,15 +100,15 @@ with tab1:
 # TAB 2 — SCENARIOS
 # ============================================================
 with tab2:
-    st.markdown("<h2 class='itype-title'>Innovation Behaviour Scenarios</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 class='itype-title'>Scenario-Based Behaviour Assessment</h2>", unsafe_allow_html=True)
 
     scenario_answers = {}
 
     for s in scenarios_data:
         st.markdown(f"""
-            <div class='itype-question-card'>
-                <h3>{s['scenario']}</h3>
-            </div>
+        <div class='itype-question-card'>
+        <h3>{s['scenario']}</h3>
+        </div>
         """, unsafe_allow_html=True)
 
         options = [opt["text"] for opt in s["options"]]
@@ -96,7 +119,6 @@ with tab2:
             key=f"sc{s['id']}"
         )
 
-        # Match choice to dimension
         for opt in s["options"]:
             if opt["text"] == choice:
                 scenario_answers[s["id"]] = opt["dimension"]
@@ -112,12 +134,12 @@ with tab3:
     if submitted:
 
         # ==============================================
-        # 1. CALCULATE BASE SCORES (0–100 per dimension)
+        # 1. CALCULATE BASE SCORES
         # ==============================================
         base_scores = calculate_idix_scores(q_answers)
 
         # ==============================================
-        # 2. APPLY SCENARIO WEIGHTING (OPTION C)
+        # 2. APPLY SCENARIO BOOST
         # ==============================================
         scenario_boost = 3
         scenario_scores = {dim: 0 for dim in base_scores}
@@ -136,13 +158,12 @@ with tab3:
         archetype_name, archetype_data = determine_archetype(final_scores, archetypes_data)
 
         # ============================================================
-        # RESULTS DISPLAY
+        # DISPLAY ARCHETYPE CARD
         # ============================================================
-
         st.markdown(f"""
         <div class='itype-result-card'>
-            <h1 class='itype-result-title'>{archetype_name}</h1>
-            <p style='text-align:center; opacity:0.85;'>{archetype_data['description']}</p>
+        <h1 class='itype-result-title'>{archetype_name}</h1>
+        <p style='text-align:center; opacity:0.85;'>{archetype_data['description']}</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -173,7 +194,7 @@ with tab3:
         st.plotly_chart(fig, use_container_width=True)
 
         # ============================================================
-        # STRENGTHS & RISKS
+        # STRENGTHS + RISKS
         # ============================================================
         st.markdown("<h3>Strengths & Growth Areas</h3>", unsafe_allow_html=True)
         st.markdown("<div class='itype-result-grid'>", unsafe_allow_html=True)
@@ -183,5 +204,8 @@ with tab3:
 
         for r in archetype_data["risks"]:
             st.markdown(f"<div class='itype-risk-card'>• {r}</div>", unsafe_allow_html=True)
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
 
         st.markdown("</div>", unsafe_allow_html=True)
