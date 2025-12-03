@@ -352,7 +352,7 @@ if "has_results" in st.session_state and st.session_state["has_results"]:
             clicked = st.button(
                 label=f"""
                 <div class="{tile_class}">
-                    <h4>{name}</h4>
+                <h4>{name}</h4>
                 </div>
                 """,
                 key=f"arche_btn_{name}",
