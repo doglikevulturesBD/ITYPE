@@ -323,63 +323,86 @@ elif step == 3:
 
 # ============================================================
 # ============================================================
-# ARCHETYPE LIBRARY — CLEAN 3×3 CLICKABLE TILE GRID
+# ARCHETYPE LIBRARY — CLEAN 3×3 TILE GRID (FIXED HTML)
 # ============================================================
 
-if step == 3:
+st.markdown("<hr class='hr-neon'><h2>Explore All Archetypes</h2>", unsafe_allow_html=True)
+st.markdown("<p style='opacity:0.85;'>Click a tile to open its full details.</p>", unsafe_allow_html=True)
 
-    st.markdown("<hr><h2>Explore All Archetypes</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='opacity:0.85;'>Click a tile below to view the full archetype profile.</p>", unsafe_allow_html=True)
+# Track which archetype is open
+if "open_archetype" not in st.session_state:
+    st.session_state["open_archetype"] = None
 
-    # Layout: 3×3 matrix
-    tile_names = list(archetypes.keys())
-    rows = [tile_names[i:i+3] for i in range(0, len(tile_names), 3)]
+# --- Render a clean 3×3 grid of neon tiles ----------------------------------
 
-    # Render tiles
-    for row in rows:
-        cols = st.columns(3)
-        for col, name in zip(cols, row):
-            active = (st.session_state["open_archetype"] == name)
-            tile_class = "archetype-tile active" if active else "archetype-tile"
+cols = st.columns(3)
 
-            with col:
-                # CLICKABLE TILE — USE st.button WITH HTML INSIDE
-                if st.button(
-                    label=f"<div class='{tile_class}'><h4>{name}</h4></div>",
-                    key=f"tile_{name}",
-                    help=f"View profile for {name}",
-                    use_container_width=True
-                ):
-                    # toggle open/close logic
-                    if active:
-                        st.session_state["open_archetype"] = None
-                    else:
-                        st.session_state["open_archetype"] = name
+archetype_names = list(archetypes.keys())
 
-    # EXPANDED PANEL
-    if st.session_state["open_archetype"]:
-        a = st.session_state["open_archetype"]
-        info = archetypes[a]
+for idx, name in enumerate(archetype_names):
+    col = cols[idx % 3]
+
+    with col:
+        tile_key = f"arch_tile_{name}"
+        is_active = (st.session_state["open_archetype"] == name)
+
+        # Render tile using pure HTML inside st.button container
+        if st.button(
+            label=" ",  # invisible button text
+            key=tile_key,
+            help=f"Open details for {name}",
+            use_container_width=True
+        ):
+            st.session_state["open_archetype"] = name if not is_active else None
+
+        # The HTML tile on top of the invisible button
+        tile_class = "archetype-tile active" if is_active else "archetype-tile"
+
+        st.markdown(
+            f"""
+            <div class="{tile_class}">
+                <h4>{name}</h4>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+# --- Expanded Panel -----------------------------------------------------------
+
+if st.session_state["open_archetype"]:
+    a = st.session_state["open_archetype"]
+    info = archetypes[a]
 
     st.markdown(f"""
-    <div class='archetype-panel'>
-    <h2>{a}</h2>
-    <p>{info.get('description','')}</p>
+    <div class="archetype-panel">
+
+    <h2 style="text-align:center; margin-bottom:10px;">{a}</h2>
+    <p>{info.get("description","")}</p>
 
     <h4>Strengths</h4>
-    <ul>{''.join([f'<li>{x}</li>' for x in info['strengths']])}</ul>
+    <ul>
+    {''.join([f'<li>{s}</li>' for s in info.get("strengths", [])])}
+    </ul>
 
     <h4>Risks</h4>
-    <ul>{''.join([f'<li>{x}</li>' for x in info['risks']])}</ul>
+    <ul>
+    {''.join([f'<li>{r}</li>' for r in info.get("risks", [])])}
+    </ul>
 
     <h4>Pathways</h4>
-    <ul>{''.join([f'<li>{x}</li>' for x in info['pathways']])}</ul>
+    <ul>
+    {''.join([f'<li>{p}</li>' for p in info.get("pathways", [])])}
+    </ul>
 
     <h4>Business Models</h4>
-    <ul>{''.join([f'<li>{x}</li>' for x in info['business_models']])}</ul>
+    <ul>
+    {''.join([f'<li>{bm}</li>' for bm in info.get("business_models", [])])}
+    </ul>
 
     <h4>Funding Strategy</h4>
-    <ul>{''.join([f'<li>{x}</li>' for x in info['funding_strategy']])}</ul>
+    <ul>
+    {''.join([f'<li>{fs}</li>' for fs in info.get("funding_strategy", [])])}
+    </ul>
+
     </div>
     """, unsafe_allow_html=True)
-
