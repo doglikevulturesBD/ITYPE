@@ -100,6 +100,21 @@ with tabs[0]:
             }
 
 # ============================================================
+# TAB 1 — FOOTER NAVIGATION BUTTONS
+# ============================================================
+
+colA, colB = st.columns([1,1])
+
+with colA:
+    if st.button("➡ Go to Scenarios", key="go_scenarios"):
+        st.session_state["active_tab"] = "scenarios"
+
+with colB:
+    if st.button("📊 Skip to Results", key="go_results"):
+        st.session_state["active_tab"] = "results"
+
+
+# ============================================================
 # TAB 2 — SCENARIOS
 # ============================================================
 
