@@ -414,6 +414,42 @@ elif step == 3:
             st.session_state["has_results"] = False
             st.session_state["open_archetype"] = None
             st.rerun()
+import os
+
+st.subheader("DEBUG — File Checks")
+
+st.write("Current Working Directory:", os.getcwd())
+
+# Check that /data exists
+try:
+    st.write("Folders in CWD:", os.listdir())
+except:
+    st.write("Could not list root folders.")
+
+# Check data folder
+try:
+    st.write("Contents of data/:", os.listdir("data"))
+except:
+    st.error("❌ data/ folder NOT found")
+
+# Check archetype_images folder
+try:
+    st.write("Contents of data/archetype_images/:", os.listdir("data/archetype_images"))
+except:
+    st.error("❌ data/archetype_images/ NOT found")
+
+# Check specific file
+selected = "Visionary"   # just test one
+test_path = f"data/archetype_images/{selected}.png"
+
+st.write("Testing path:", test_path)
+
+try:
+    with open(test_path, "rb") as f:
+        st.success("🎉 Visionary.png FOUND!")
+except Exception as e:
+    st.error(f"❌ Visionary.png NOT FOUND")
+    st.write("Error:", e)
 
 # ============================================================
 # ARCHETYPE GRID WITH SIMPLE BUTTONS (3×3)
