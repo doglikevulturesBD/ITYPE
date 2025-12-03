@@ -472,3 +472,39 @@ body, .main, .stApp {
     border: 1px solid rgba(0,255,255,0.22);
     box-shadow: inset 0 0 20px rgba(0,255,255,0.22);
 }
+.archetype-grid {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.archetype-tile {
+    background: rgba(0, 25, 45, 0.6);
+    padding: 25px;
+    margin: 10px 0;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.archetype-tile:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px rgba(0,255,255,0.4);
+    border-color: #00eaff;
+}
+
+.archetype-tile.active {
+    box-shadow: 0 0 40px rgba(0,255,255,0.6);
+    border-color: #00eaff;
+    background: rgba(0, 40, 60, 0.9);
+}
+
+.archetype-panel {
+    margin-top: 30px;
+    padding: 25px;
+    border-radius: 12px;
+    background: rgba(0, 30, 50, 0.7);
+    border: 1px solid rgba(0,255,255,0.4);
+    box-shadow: 0 0 25px rgba(0,255,255,0.3);
+}
