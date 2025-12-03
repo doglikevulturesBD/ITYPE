@@ -1,1 +1,162 @@
+/* ============================================================
+   I-TYPE — FUTURISTIC GLOW COMPONENTS
+   (Adds quiz + results UI on top of your existing design system)
+============================================================ */
+
+/* MAIN WRAPPER */
+.itype-container {
+    background: rgba(20, 28, 48, 0.55);
+    border: 1px solid rgba(0,255,255,0.15);
+    border-radius: 20px;
+    padding: 40px 35px;
+    margin: 40px auto;
+    max-width: 900px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 35px rgba(0,255,255,0.18), 
+                inset 0 0 18px rgba(140, 80, 255, 0.15);
+}
+
+/* SECTION TITLE */
+.itype-container h1 {
+    font-size: 2.8rem;
+    text-align: center;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #00eaff, #7a5cff, #ff4bf1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.itype-container p.subtitle {
+    text-align: center;
+    opacity: 0.85;
+    margin-bottom: 40px;
+    font-size: 1.2rem;
+}
+
+/* QUESTION CARD */
+.itype-question-card {
+    background: rgba(15, 20, 35, 0.55);
+    padding: 22px 28px;
+    border-radius: 16px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(0,255,255,0.15);
+    box-shadow: 0 0 18px rgba(0,255,255,0.08);
+    backdrop-filter: blur(8px);
+    transition: all 0.25s ease;
+}
+
+.itype-question-card:hover {
+    transform: translateY(-4px);
+    border-color: #4af3ff;
+    box-shadow: 0 0 25px rgba(0,255,255,0.22);
+}
+
+.itype-question-card h3 {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+/* STREAMLIT SLIDER OVERRIDES */
+.stSlider > div > div > div {
+    background: rgba(0,255,255,0.55) !important;
+}
+
+.stSlider > div > div > div[role="slider"] {
+    background: #00eaff !important;
+    border: 2px solid #7a5cff !important;
+    box-shadow: 0 0 10px #00d0ff, 0 0 20px #7a5cff !important;
+}
+
+/* SUPER GLOW SUBMIT BUTTON */
+.itype-submit {
+    display: block;
+    margin: 35px auto 0;
+    padding: 14px 38px;
+    border-radius: 14px;
+    font-size: 1.2rem;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid rgba(0,255,255,0.25);
+    background: linear-gradient(135deg, rgba(0,255,255,0.18), rgba(140,70,255,0.18));
+    color: #e5f4ff;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 12px rgba(0,255,255,0.25);
+    transition: 0.25s ease;
+}
+
+.itype-submit:hover {
+    transform: translateY(-5px) scale(1.03);
+    border-color: #4af3ff;
+    box-shadow: 0 0 25px rgba(0,255,255,0.4), 
+                0 0 35px rgba(140,70,255,0.35);
+}
+
+/* RESULT CARD */
+.itype-result-card {
+    background: rgba(20, 28, 48, 0.6);
+    padding: 30px;
+    border-radius: 22px;
+    border: 1px solid rgba(0,255,255,0.2);
+    margin-top: 40px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 30px rgba(0,255,255,0.2),
+                inset 0 0 15px rgba(120,60,255,0.2);
+}
+
+.itype-result-title {
+    font-size: 2.4rem;
+    background: linear-gradient(90deg, #00eaff, #7a5cff, #ff4bf1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+}
+
+/* RESULT GRID FOR STRENGTHS & RISKS */
+.itype-result-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    margin-top: 25px;
+}
+
+.itype-strength-card,
+.itype-risk-card {
+    padding: 20px;
+    border-radius: 16px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 20px rgba(0,255,255,0.12);
+    border: 1px solid rgba(0,255,255,0.15);
+    transition: 0.25s ease;
+}
+
+.itype-strength-card {
+    background: rgba(10, 45, 20, 0.35);
+    border-color: rgba(34,255,150,0.25);
+    box-shadow: 0 0 18px rgba(34,255,150,0.25);
+}
+
+.itype-risk-card {
+    background: rgba(60,10,25,0.35);
+    border-color: rgba(255,120,150,0.25);
+    box-shadow: 0 0 18px rgba(255,120,150,0.25);
+}
+
+.itype-strength-card:hover,
+.itype-risk-card:hover {
+    transform: translateY(-4px);
+}
+
+/* RADAR CHART CONTAINER */
+.itype-radar-container {
+    padding: 20px;
+    margin: 30px auto;
+    max-width: 600px;
+    border-radius: 18px;
+    border: 1px solid rgba(0,255,255,0.18);
+    backdrop-filter: blur(8px);
+    background: rgba(15, 20, 35, 0.55);
+    box-shadow: 0 0 30px rgba(0,255,255,0.18),
+                0 0 50px rgba(120,60,255,0.15);
+}
+
 
