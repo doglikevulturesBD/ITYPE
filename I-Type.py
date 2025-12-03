@@ -57,9 +57,13 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+if "active_tab" not in st.session_state:
+    st.session_state["active_tab"] = "assessment"
 
 
-tabs = st.tabs(["🔍 Assessment", "🧪 Scenarios", "📊 Results", "DEV"])
+assessment_tab, scenario_tab, results_tab, dev_tab = st.tabs(
+    ["🔍 Assessment", "🧪 Scenarios", "📊 Results", "DEV"]
+)
 
 # ============================================================
 # TAB 1 — QUESTIONNAIRE
