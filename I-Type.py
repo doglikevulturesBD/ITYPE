@@ -89,20 +89,34 @@ with tabs[1]:
     count = 0
 
     for i, sc in enumerate(scenarios):
+
+        # SAFE: Avoid KeyError for missing title
+        title = sc.get("title", f"Scenario {i+1}")
+        desc = sc.get("description", "No description provided.")
+
         st.markdown(f"""
         <div class='itype-scenario-card'>
-        <h3>{sc['title']}</h3>
-        <p>{sc['description']}</p>
+            <h3>{title}</h3>
+            <p>{desc}</p>
         </div>
         """, unsafe_allow_html=True)
 
+        # SAFE: ensure options exist
+        options = sc.get("options", ["Option A", "Option B"])
+        mapping = sc.get("mapping", {})
+
         choice = st.selectbox(
             "Choose your response:",
-            sc["options"],
+            options,
             key=f"sc{i}"
         )
 
-        score_vec = sc["mapping"][choice]
+        # SAFE: if mapping missing, assume zero vector
+        score_vec = mapping.get(choice, {
+            "thinking": 0, "execution": 0, "risk": 0,
+            "motivation": 0, "team": 0, "commercial": 0
+        })
+
         for k in scenario_scores_raw:
             scenario_scores_raw[k] += score_vec[k]
         count += 1
