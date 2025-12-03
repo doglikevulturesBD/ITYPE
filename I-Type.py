@@ -361,25 +361,25 @@ if step == 3:
         a = st.session_state["open_archetype"]
         info = archetypes[a]
 
-        st.markdown(f"""
-        <div class='archetype-panel'>
-        <h2>{a}</h2>
-        <p>{info.get('description','')}</p>
+    st.markdown(f"""
+    <div class='archetype-panel'>
+    <h2>{a}</h2>
+    <p>{info.get('description','')}</p>
 
-        <h4>Strengths</h4>
-        <ul>{''.join([f'<li>{x}</li>' for x in info['strengths']])}</ul>
+    <h4>Strengths</h4>
+    <ul>{''.join([f'<li>{x}</li>' for x in info['strengths']])}</ul>
 
-        <h4>Risks</h4>
-        <ul>{''.join([f'<li>{x}</li>' for x in info['risks']])}</ul>
+    <h4>Risks</h4>
+    <ul>{''.join([f'<li>{x}</li>' for x in info['risks']])}</ul>
 
-        <h4>Pathways</h4>
-        <ul>{''.join([f'<li>{x}</li>' for x in info['pathways']])}</ul>
+    <h4>Pathways</h4>
+    <ul>{''.join([f'<li>{x}</li>' for x in info['pathways']])}</ul>
 
-        <h4>Business Models</h4>
-        <ul>{''.join([f'<li>{x}</li>' for x in info['business_models']])}</ul>
+    <h4>Business Models</h4>
+    <ul>{''.join([f'<li>{x}</li>' for x in info['business_models']])}</ul>
 
-        <h4>Funding Strategy</h4>
-        <ul>{''.join([f'<li>{x}</li>' for x in info['funding_strategy']])}</ul>
-        </div>
-        """, unsafe_allow_html=True)
+    <h4>Funding Strategy</h4>
+    <ul>{''.join([f'<li>{x}</li>' for x in info['funding_strategy']])}</ul>
+    </div>
+    """, unsafe_allow_html=True)
 
