@@ -215,14 +215,16 @@ elif step == 3:
         primary, data = determine_archetype(final_scores, archetypes)
         probs, stability, shadow = monte_carlo_probabilities(final_scores, archetypes)
         shadow_name, shadow_pct = shadow
+        st.session_state["has_results"] = True
+
 
         # HERO CARD
         st.markdown(f"""
         <div class='itype-result-card'>
-            <h1>{primary}</h1>
-            <p>{data['description']}</p>
-            <p><b>Stability:</b> {stability:.1f}%</p>
-            <p><b>Shadow:</b> {shadow_name} ({shadow_pct:.1f}%)</p>
+        <h1>{primary}</h1>
+        <p>{data['description']}</p>
+        <p><b>Stability:</b> {stability:.1f}%</p>
+        <p><b>Shadow:</b> {shadow_name} ({shadow_pct:.1f}%)</p>
         </div>
         """, unsafe_allow_html=True)
 
