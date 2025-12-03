@@ -206,3 +206,36 @@ with tabs[2]:
 
         st.plotly_chart(fig2, use_container_width=True)
 
+# ============================================================
+# Archetype Detailed Insights
+# ============================================================
+
+st.markdown("""
+<hr>
+<h2 style='margin-top:35px;'>Your Innovator Breakdown</h2>
+""", unsafe_allow_html=True)
+
+# ---------- Strengths ----------
+st.markdown("<h3>Strengths</h3>", unsafe_allow_html=True)
+for s in archetype_data.get("strengths", []):
+    st.markdown(f"<div class='itype-strength-card'>• {s}</div>", unsafe_allow_html=True)
+
+# ---------- Risks ----------
+st.markdown("<h3 style='margin-top:20px;'>Growth Edges & Risks</h3>", unsafe_allow_html=True)
+for r in archetype_data.get("risks", []):
+    st.markdown(f"<div class='itype-risk-card'>• {r}</div>", unsafe_allow_html=True)
+
+# ---------- Recommended Pathways ----------
+st.markdown("<h3 style='margin-top:20px;'>Recommended Innovation Pathways</h3>", unsafe_allow_html=True)
+for p in archetype_data.get("pathways", []):
+    st.markdown(f"<div class='itype-pathway-card'>• {p}</div>", unsafe_allow_html=True)
+
+# ---------- Business Models ----------
+st.markdown("<h3 style='margin-top:20px;'>Suggested Business Models</h3>", unsafe_allow_html=True)
+for bm in archetype_data.get("business_models", []):
+    st.markdown(f"<div class='itype-business-card'>• {bm}</div>", unsafe_allow_html=True)
+
+# ---------- Funding Strategy ----------
+st.markdown("<h3 style='margin-top:20px;'>Funding Strategy Fit</h3>", unsafe_allow_html=True)
+for fs in archetype_data.get("funding_strategy", []):
+    st.markdown(f"<div class='itype-funding-card'>• {fs}</div>", unsafe_allow_html=True)
