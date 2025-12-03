@@ -192,6 +192,8 @@ if step == 1:
 
 elif step == 2:
 
+    st.markdown("<h2>Scenario-Based Assessment</h2>", unsafe_allow_html=True)
+
     if not scenarios:
         st.error("❌ No scenarios found. Check data/scenarios.json.")
     else:
@@ -201,41 +203,36 @@ elif step == 2:
             desc = sc.get("description", "No description provided.")
             options = sc.get("options", [])
 
-            # Create a container to host both HTML + selectbox
-            scenario_container = st.container()
-
-            with scenario_container:
-                # ---- TILE HEADER HTML ----
+            # --- TRUE unified tile ----------------------------
+            with st.container():
                 st.markdown(f"""
-                <div class='itype-question-card' style='padding-bottom: 5px;'>
-                <h3 style='font-size: 1.3rem; margin-bottom: 6px;'>{title}</h3>
-                <p style='opacity: 0.85; margin-bottom: 18px;'>{desc}</p>
+                <div class="scenario-card">
+                    <h3>{title}</h3>
+                    <p>{desc}</p>
                 </div>
                 """, unsafe_allow_html=True)
 
-                # ---- SELECT INPUT INSIDE THE SAME TILE ----
-                st.markdown("<div class='scenario-select-wrapper'>", unsafe_allow_html=True)
+                # Now place the widget *inside* a visual wrapper
+                with st.container():
+                    st.markdown("<div class='scenario-selectbox'>", unsafe_allow_html=True)
 
-                st.selectbox(
-                    "Select your response:",
-                    options,
-                    key=f"scenario_{i}",
-                    label_visibility="visible",
-                )
+                    st.selectbox(
+                        "Your response:",
+                        options,
+                        key=f"scenario_{i}",
+                        label_visibility="collapsed"
+                    )
 
-                st.markdown("</div>", unsafe_allow_html=True)
+                    st.markdown("</div>", unsafe_allow_html=True)
 
-                # Add spacing between tiles
-                st.markdown("<br>", unsafe_allow_html=True)
+                st.markdown("<div class='scenario-spacer'></div>", unsafe_allow_html=True)
 
     # Navigation
     col1, col2, col3 = st.columns([1, 1, 1])
-
     with col1:
         if st.button("⬅ Back to Questions"):
             st.session_state["step"] = 1
             st.rerun()
-
     with col3:
         if st.button("Next ➜ Results"):
             st.session_state["step"] = 3
