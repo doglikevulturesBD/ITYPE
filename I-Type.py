@@ -453,7 +453,7 @@ if st.session_state.get("has_results") and archetypes:
 
     if selected is not None:
 
-        img_path = f"data/archetype_images/{selected.replace(' ', '_')}.png"
+        img_path = f"data/archetype_images/{selected.replace(' ', '_')}.webp"
 
         st.write("DEBUG loading:", img_path)  # REMOVE LATER
 
