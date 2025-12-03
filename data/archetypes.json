@@ -1,85 +1,186 @@
 {
-  "Explorer": {
-    "description": "Curious, experimental, and constantly discovering new possibilities.",
+  "The Visionary": {
+    "description": "Future-driven strategist with strong cognitive range and big-picture clarity. Thrives in ambiguity and sets bold innovation direction.",
+    "signature": {
+      "RISK": 70,
+      "MOTIVATION": 80,
+      "TEAM": 55,
+      "COMMERCIAL": 60,
+      "THINKING": 85,
+      "EXECUTION": 40
+    },
     "strengths": [
-      "Generates unconventional ideas",
-      "Strong creative thinking",
-      "Comfortable with ambiguity"
+      "Exceptional idea generation",
+      "Long-range thinking",
+      "Ability to articulate compelling futures",
+      "Confident taking calculated risks"
     ],
     "risks": [
-      "May struggle to finish projects",
-      "Chases too many ideas",
-      "Easily distracted by novelty"
+      "May lose interest in details",
+      "Execution may lag behind vision",
+      "Can overwhelm teams with too many ideas"
     ]
   },
 
-  "Builder": {
-    "description": "Practical, structured, and excellent at executing ideas.",
+  "The Strategist": {
+    "description": "Analytical planner skilled at connecting insights, structuring problems, and designing robust innovation paths.",
+    "signature": {
+      "RISK": 45,
+      "MOTIVATION": 70,
+      "TEAM": 60,
+      "COMMERCIAL": 75,
+      "THINKING": 80,
+      "EXECUTION": 65
+    },
     "strengths": [
-      "Strong at planning and delivery",
-      "Persistent and reliable",
-      "Turns concepts into reality"
+      "Strong systems thinking",
+      "Excellent decision-making under complexity",
+      "Commercially grounded",
+      "Balanced logic and creativity"
     ],
     "risks": [
-      "May lack creativity at times",
-      "Over-focus on feasibility",
-      "May avoid high uncertainty"
+      "May over-analyze before acting",
+      "Avoids high-risk leaps",
+      "Prefers structure over exploration"
     ]
   },
 
-  "Challenger": {
-    "description": "Bold, risk-tolerant, and pushes boundaries to create breakthroughs.",
+  "The Operator": {
+    "description": "Execution-driven innovator who turns ideas into operational reality through discipline and consistency.",
+    "signature": {
+      "RISK": 40,
+      "MOTIVATION": 75,
+      "TEAM": 65,
+      "COMMERCIAL": 60,
+      "THINKING": 55,
+      "EXECUTION": 85
+    },
     "strengths": [
-      "High risk tolerance",
-      "Fast decision-making",
-      "Resilient under pressure"
+      "Strong follow-through and discipline",
+      "Reliable under pressure",
+      "Creates structure from chaos",
+      "Excellent workflow builder"
     ],
     "risks": [
-      "Can take unnecessary risks",
-      "May overlook details",
-      "Sometimes too confrontational"
+      "May avoid radical ideas",
+      "Can prioritise efficiency over exploration",
+      "Sometimes struggles with ambiguity"
     ]
   },
 
-  "Driver": {
-    "description": "Highly motivated, disciplined, and goal-focused.",
+  "The Catalyst": {
+    "description": "Energetic motivator who accelerates teams, rallies people, and injects momentum into innovation culture.",
+    "signature": {
+      "RISK": 55,
+      "MOTIVATION": 90,
+      "TEAM": 80,
+      "COMMERCIAL": 55,
+      "THINKING": 60,
+      "EXECUTION": 55
+    },
     "strengths": [
-      "Strong intrinsic motivation",
-      "High energy and commitment",
-      "Pushes projects forward"
+      "High emotional intelligence",
+      "Great at mobilizing people",
+      "Naturally persuasive and energetic",
+      "Creates strong team cohesion"
     ],
     "risks": [
-      "May burn out",
-      "May push others too hard",
-      "May take on too many roles"
+      "May rush ahead without data",
+      "Can burn out from overcommitment",
+      "Sometimes over-optimistic"
     ]
   },
 
-  "Collaborator": {
-    "description": "Connects people, builds teams, and strengthens communication.",
+  "The Experimenter": {
+    "description": "Curious, iterative innovator who learns by doing and constantly tests new approaches.",
+    "signature": {
+      "RISK": 75,
+      "MOTIVATION": 70,
+      "TEAM": 50,
+      "COMMERCIAL": 45,
+      "THINKING": 65,
+      "EXECUTION": 60
+    },
     "strengths": [
-      "Works well with diverse teams",
-      "Excellent communication",
-      "Builds trust easily"
+      "High adaptability",
+      "Rapid experimentation mindset",
+      "Comfortable with failure",
+      "Generates practical insights through testing"
     ],
     "risks": [
-      "May avoid conflict",
-      "Over-relies on group decisions",
-      "May struggle with solo tasks"
+      "May lack long-term planning",
+      "Can pivot too often",
+      "Sometimes disregards commercial constraints"
     ]
   },
 
-  "Strategist": {
-    "description": "Understands customers, markets, and the commercial journey of innovation.",
+  "The Architect": {
+    "description": "Deliberate designer who builds stable innovation systems, frameworks, and scalable solutions.",
+    "signature": {
+      "RISK": 35,
+      "MOTIVATION": 65,
+      "TEAM": 70,
+      "COMMERCIAL": 80,
+      "THINKING": 75,
+      "EXECUTION": 80
+    },
     "strengths": [
-      "Sees the commercial pathway",
-      "Understands user needs",
-      "Balances feasibility and value"
+      "Strong structural thinker",
+      "Excellent at building reliable frameworks",
+      "Balances innovation with feasibility",
+      "Data-informed problem solver"
     ],
     "risks": [
-      "May prioritise business over innovation",
-      "May be overly analytical",
-      "Sometimes slow to act"
+      "May resist rapid experimentation",
+      "Sometimes perceived as rigid",
+      "Prefers certainty before action"
+    ]
+  },
+
+  "The Storyteller": {
+    "description": "Narrative-driven innovator skilled at persuasion, communication, and translating innovation into meaning.",
+    "signature": {
+      "RISK": 50,
+      "MOTIVATION": 85,
+      "TEAM": 85,
+      "COMMERCIAL": 55,
+      "THINKING": 70,
+      "EXECUTION": 45
+    },
+    "strengths": [
+      "Powerful communicator",
+      "Excellent at pitching ideas",
+      "Builds alignment across stakeholders",
+      "Human-centered perspective"
+    ],
+    "risks": [
+      "Execution may lag communication",
+      "May avoid deeply technical detail",
+      "Sometimes overly dependent on others to implement"
+    ]
+  },
+
+  "The Analyst": {
+    "description": "Evidence-led innovator who excels at research, insight generation, and methodical innovation processes.",
+    "signature": {
+      "RISK": 30,
+      "MOTIVATION": 55,
+      "TEAM": 50,
+      "COMMERCIAL": 70,
+      "THINKING": 90,
+      "EXECUTION": 70
+    },
+    "strengths": [
+      "High analytical accuracy",
+      "Strong insight generation",
+      "Excellent problem deconstruction",
+      "Objective and rational"
+    ],
+    "risks": [
+      "May hesitate to take risk",
+      "Slower decision-making",
+      "Prefers evidence over intuition"
     ]
   }
 }
+
