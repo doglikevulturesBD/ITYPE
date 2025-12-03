@@ -1,1 +1,266 @@
+[
+  /* ============================================================
+     THINKING (8 questions)
+  ============================================================= */
+  {
+    "question": "I enjoy exploring multiple ideas before choosing a direction.",
+    "dimension": "thinking",
+    "reverse": false
+  },
+  {
+    "question": "I quickly generate creative or unconventional solutions.",
+    "dimension": "thinking",
+    "reverse": false
+  },
+  {
+    "question": "I often see patterns, trends, or connections that others overlook.",
+    "dimension": "thinking",
+    "reverse": false
+  },
+  {
+    "question": "I prefer clear structure over open-ended brainstorming.",
+    "dimension": "thinking",
+    "reverse": true
+  },
+  {
+    "question": "I enjoy thinking about future possibilities and emerging concepts.",
+    "dimension": "thinking",
+    "reverse": false
+  },
+  {
+    "question": "I feel comfortable when ideas are still abstract or not fully defined.",
+    "dimension": "thinking",
+    "reverse": false
+  },
+  {
+    "question": "I struggle to come up with new concepts without guidelines.",
+    "dimension": "thinking",
+    "reverse": true
+  },
+  {
+    "question": "I enjoy reframing problems to find new angles.",
+    "dimension": "thinking",
+    "reverse": false
+  },
+
+  /* ============================================================
+     EXECUTION (8 questions)
+  ============================================================= */
+  {
+    "question": "I prefer building structured systems and step-by-step processes.",
+    "dimension": "execution",
+    "reverse": false
+  },
+  {
+    "question": "I often convert ideas into prototypes quickly.",
+    "dimension": "execution",
+    "reverse": false
+  },
+  {
+    "question": "I am consistent in completing tasks once started.",
+    "dimension": "execution",
+    "reverse": false
+  },
+  {
+    "question": "I find it difficult to follow rigid routines.",
+    "dimension": "execution",
+    "reverse": true
+  },
+  {
+    "question": "I enjoy improving workflows and making processes more efficient.",
+    "dimension": "execution",
+    "reverse": false
+  },
+  {
+    "question": "I prefer high-level thinking and struggle with implementation details.",
+    "dimension": "execution",
+    "reverse": true
+  },
+  {
+    "question": "I like breaking down complex tasks into manageable steps.",
+    "dimension": "execution",
+    "reverse": false
+  },
+  {
+    "question": "I often iterate on my prototypes quickly, even if they're messy.",
+    "dimension": "execution",
+    "reverse": false
+  },
+
+  /* ============================================================
+     RISK (8 questions)
+  ============================================================= */
+  {
+    "question": "I take action even when outcomes are uncertain.",
+    "dimension": "risk",
+    "reverse": false
+  },
+  {
+    "question": "I prefer decisions backed by data rather than intuition.",
+    "dimension": "risk",
+    "reverse": true
+  },
+  {
+    "question": "I am comfortable experimenting without guaranteed results.",
+    "dimension": "risk",
+    "reverse": false
+  },
+  {
+    "question": "I delay decisions until I feel more certain.",
+    "dimension": "risk",
+    "reverse": true
+  },
+  {
+    "question": "I enjoy challenges with unpredictable outcomes.",
+    "dimension": "risk",
+    "reverse": false
+  },
+  {
+    "question": "I prefer stability and minimizing uncertainty.",
+    "dimension": "risk",
+    "reverse": true
+  },
+  {
+    "question": "I take calculated risks when working on new ideas.",
+    "dimension": "risk",
+    "reverse": false
+  },
+  {
+    "question": "I feel uncomfortable when I have to make quick decisions.",
+    "dimension": "risk",
+    "reverse": true
+  },
+
+  /* ============================================================
+     MOTIVATION (8 questions)
+  ============================================================= */
+  {
+    "question": "I am driven by solving real-world problems.",
+    "dimension": "motivation",
+    "reverse": false
+  },
+  {
+    "question": "I feel energized when imagining future possibilities.",
+    "dimension": "motivation",
+    "reverse": false
+  },
+  {
+    "question": "I am motivated more by improving existing systems than creating new things.",
+    "dimension": "motivation",
+    "reverse": true
+  },
+  {
+    "question": "I feel a strong pull toward ideas that could change the future.",
+    "dimension": "motivation",
+    "reverse": false
+  },
+  {
+    "question": "I enjoy understanding user needs deeply before building solutions.",
+    "dimension": "motivation",
+    "reverse": false
+  },
+  {
+    "question": "I prefer working on imaginative concepts over market-driven ones.",
+    "dimension": "motivation",
+    "reverse": false
+  },
+  {
+    "question": "I get more satisfaction from practicality than creativity.",
+    "dimension": "motivation",
+    "reverse": true
+  },
+  {
+    "question": "I am drawn to bold or visionary ideas, even if they seem unrealistic.",
+    "dimension": "motivation",
+    "reverse": false
+  },
+
+  /* ============================================================
+     TEAM (8 questions)
+  ============================================================= */
+  {
+    "question": "I prefer taking ownership and working independently.",
+    "dimension": "team",
+    "reverse": false
+  },
+  {
+    "question": "I feel comfortable coordinating or influencing team direction.",
+    "dimension": "team",
+    "reverse": false
+  },
+  {
+    "question": "I struggle to stay productive when working alone for long periods.",
+    "dimension": "team",
+    "reverse": true
+  },
+  {
+    "question": "I actively seek feedback from others when shaping ideas.",
+    "dimension": "team",
+    "reverse": false
+  },
+  {
+    "question": "I collaborate well across diverse disciplines.",
+    "dimension": "team",
+    "reverse": false
+  },
+  {
+    "question": "I often prefer to complete projects myself rather than delegate.",
+    "dimension": "team",
+    "reverse": false
+  },
+  {
+    "question": "I get more energy from team interactions than solo work.",
+    "dimension": "team",
+    "reverse": true
+  },
+  {
+    "question": "I believe that innovation improves when multiple perspectives are included.",
+    "dimension": "team",
+    "reverse": false
+  },
+
+  /* ============================================================
+     COMMERCIAL (8 questions)
+  ============================================================= */
+  {
+    "question": "I rely on evidence, data, and validation to guide decisions.",
+    "dimension": "commercial",
+    "reverse": false
+  },
+  {
+    "question": "I often trust my intuition more than formal analysis.",
+    "dimension": "commercial",
+    "reverse": true
+  },
+  {
+    "question": "I enjoy modelling, mapping, or analyzing the business side of innovation.",
+    "dimension": "commercial",
+    "reverse": false
+  },
+  {
+    "question": "I make decisions quickly without needing detailed research.",
+    "dimension": "commercial",
+    "reverse": true
+  },
+  {
+    "question": "I think about market fit while developing ideas.",
+    "dimension": "commercial",
+    "reverse": false
+  },
+  {
+    "question": "I prefer technical or creative tasks more than commercial ones.",
+    "dimension": "commercial",
+    "reverse": true
+  },
+  {
+    "question": "I consider financial feasibility early in the innovation process.",
+    "dimension": "commercial",
+    "reverse": false
+  },
+  {
+    "question": "I feel comfortable evaluating startup or business models.",
+    "dimension": "commercial",
+    "reverse": false
+  }
+]
 
