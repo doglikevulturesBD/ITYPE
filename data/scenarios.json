@@ -1,102 +1,92 @@
 [
   {
-    "id": "scenario_1",
-    "scenario": "You are given R10,000 and one week to test a new idea. What do you do first?",
-    "options": {
-      "Run quick user interviews": "commercial",
-      "Build a scrappy prototype immediately": "execution",
-      "Map long-term future implications and trends": "thinking",
-      "Launch a bold, risky micro-experiment": "risk"
-    }
+    "id": 1,
+    "scenario": "A colleague proposes a bold idea that might fail but could have huge upside.",
+    "options": [
+      { "text": "Encourage them and explore the idea further.", "dimension": "thinking" },
+      { "text": "Start evaluating feasibility immediately.", "dimension": "execution" },
+      { "text": "Push to test it quickly despite risks.", "dimension": "risk" }
+    ]
   },
   {
-    "id": "scenario_2",
-    "scenario": "A project stalls because two key stakeholders strongly disagree. You:",
-    "options": {
-      "Facilitate a structured alignment session": "team",
-      "Prototype both directions quickly": "execution",
-      "Analyse data to determine the best route": "commercial",
-      "Reframe the entire problem from scratch": "thinking"
-    }
+    "id": 2,
+    "scenario": "You are working on a long-term project and hit a slow, boring phase.",
+    "options": [
+      { "text": "Remind yourself why the work matters.", "dimension": "motivation" },
+      { "text": "Seek help from teammates to maintain progress.", "dimension": "team" },
+      { "text": "Re-evaluate the commercial value to re-energize yourself.", "dimension": "commercial" }
+    ]
   },
   {
-    "id": "scenario_3",
-    "scenario": "You must pitch a new product direction tomorrow with almost no prep time. You:",
-    "options": {
-      "Create a visionary future narrative": "thinking",
-      "Build a storyboard prototype overnight": "execution",
-      "Gather whatever data you can to validate": "commercial",
-      "Propose a radically different direction": "risk"
-    }
+    "id": 3,
+    "scenario": "Your team disagrees on a strategic direction.",
+    "options": [
+      { "text": "Facilitate discussion to align the team.", "dimension": "team" },
+      { "text": "Look at market data to decide.", "dimension": "commercial" },
+      { "text": "Experiment with both paths briefly.", "dimension": "risk" }
+    ]
   },
   {
-    "id": "scenario_4",
-    "scenario": "Your team keeps missing deadlines due to unclear responsibilities. You:",
-    "options": {
-      "Define roles and build structure": "execution",
-      "Run a collaborative problem-solving workshop": "team",
-      "Analyse the workflow to diagnose bottlenecks": "commercial",
-      "Encourage experimentation with new processes": "risk"
-    }
+    "id": 4,
+    "scenario": "You discover a new technology relevant to your field.",
+    "options": [
+      { "text": "Explore its potential applications deeply.", "dimension": "thinking" },
+      { "text": "Prototype something quickly using it.", "dimension": "execution" },
+      { "text": "Pitch a bold concept using the technology.", "dimension": "motivation" }
+    ]
   },
   {
-    "id": "scenario_5",
-    "scenario": "You receive unexpected negative feedback about your prototype. You:",
-    "options": {
-      "Use the feedback to refine and iterate": "execution",
-      "Run deeper user research to understand root causes": "commercial",
-      "Pivot the idea boldly based on intuition": "risk",
-      "Reframe the problem through a new conceptual lens": "thinking"
-    }
+    "id": 5,
+    "scenario": "You receive difficult feedback about your project.",
+    "options": [
+      { "text": "Reflect and adjust your strategy calmly.", "dimension": "risk" },
+      { "text": "Seek input from others to improve it.", "dimension": "team" },
+      { "text": "Validate assumptions again with customers.", "dimension": "commercial" }
+    ]
   },
   {
-    "id": "scenario_6",
-    "scenario": "You join a new team where the culture is very different from your usual environment. You:",
-    "options": {
-      "Adapt and blend into existing workflows": "team",
-      "Introduce structured systems to improve clarity": "execution",
-      "Pitch big creative concepts to inspire the team": "thinking",
-      "Propose bold new ways of working": "risk"
-    }
+    "id": 6,
+    "scenario": "You need to choose between a safe project and a highly innovative one.",
+    "options": [
+      { "text": "Pick the innovative project — bigger upside.", "dimension": "risk" },
+      { "text": "Pick the safe one — more reliable path.", "dimension": "execution" },
+      { "text": "Pick the one that aligns with your long-term purpose.", "dimension": "motivation" }
+    ]
   },
   {
-    "id": "scenario_7",
-    "scenario": "You’re asked to evaluate a new technology with minimal information. You:",
-    "options": {
-      "Conduct a rapid desk research validation": "commercial",
-      "Prototype a small test environment": "execution",
-      "Explore future scenarios where it may matter": "thinking",
-      "Make an intuitive judgment call": "risk"
-    }
+    "id": 7,
+    "scenario": "Your team is stuck on a problem.",
+    "options": [
+      { "text": "Generate fresh creative angles.", "dimension": "thinking" },
+      { "text": "Break problem into executable tasks.", "dimension": "execution" },
+      { "text": "Reframe it from the customer’s perspective.", "dimension": "commercial" }
+    ]
   },
   {
-    "id": "scenario_8",
-    "scenario": "In a brainstorm session, the group runs out of ideas. You:",
-    "options": {
-      "Suggest structured ideation techniques": "team",
-      "Propose unusual, high-risk concepts": "risk",
-      "Reframe the problem or constraints": "thinking",
-      "Look for user or market data to spark direction": "commercial"
-    }
+    "id": 8,
+    "scenario": "You must deliver a project but time is limited.",
+    "options": [
+      { "text": "Motivate the team to push through.", "dimension": "motivation" },
+      { "text": "Take leadership and coordinate people tightly.", "dimension": "team" },
+      { "text": "Simplify the scope and execute fast.", "dimension": "execution" }
+    ]
   },
   {
-    "id": "scenario_9",
-    "scenario": "Your prototype performs poorly in the first field test. You:",
-    "options": {
-      "Break it down and rebuild a cleaner version": "execution",
-      "Double down and run more field tests": "risk",
-      "Reassess problem–solution fit through research": "commercial",
-      "Explore alternative concept directions": "thinking"
-    }
+    "id": 9,
+    "scenario": "You're asked to present an idea to senior stakeholders.",
+    "options": [
+      { "text": "Focus on big-picture concepts and vision.", "dimension": "thinking" },
+      { "text": "Focus on feasibility and actionable steps.", "dimension": "execution" },
+      { "text": "Focus on market need and value proposition.", "dimension": "commercial" }
+    ]
   },
   {
-    "id": "scenario_10",
-    "scenario": "A team member proposes a radical idea that contradicts your current approach. You:",
-    "options": {
-      "Evaluate it calmly with structured criteria": "commercial",
-      "Prototype both options and compare results": "execution",
-      "Explore the idea's long-term implications": "thinking",
-      "Champion the radical idea and run with it": "risk"
-    }
+    "id": 10,
+    "scenario": "A new opportunity appears, but resources are limited.",
+    "options": [
+      { "text": "Take the risk — resource issues can be solved later.", "dimension": "risk" },
+      { "text": "Prioritise based on strategic fit and value.", "dimension": "commercial" },
+      { "text": "Stick to the original plan and avoid distractions.", "dimension": "execution" }
+    ]
   }
 ]
