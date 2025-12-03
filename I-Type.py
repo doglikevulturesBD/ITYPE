@@ -323,78 +323,82 @@ elif step == 3:
 
 # ============================================================
 # ============================================================
-# 3×3 ARCHETYPE TILE GRID — Streamlit-safe clickable tiles
+# ARCHETYPE LIBRARY — only after CALCULATION & only in Step 3
 # ============================================================
 
-st.markdown("<hr class='hr-neon'><h2>Explore All Archetypes</h2>", unsafe_allow_html=True)
-st.markdown("<p style='opacity:0.85;'>Click a tile to reveal the full description.</p>", unsafe_allow_html=True)
+if "has_results" in st.session_state and st.session_state["has_results"]:
 
-if "open_archetype" not in st.session_state:
-    st.session_state["open_archetype"] = None
+    st.markdown("<hr class='hr-neon'>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align:center;'>Explore All Archetypes</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='opacity:0.85; text-align:center;'>Click any tile to reveal its full profile.</p>", unsafe_allow_html=True)
 
-# 3 columns for 3×3 grid
-cols = st.columns(3)
+    # Track open archetype
+    if "open_archetype" not in st.session_state:
+        st.session_state["open_archetype"] = None
 
-for i, (name, data) in enumerate(archetypes.items()):
-    col = cols[i % 3]
+    # 3×3 GRID
+    cols = st.columns(3)
 
-    with col:
-        tile_active = (st.session_state["open_archetype"] == name)
-        tile_class = "archetype-tile active" if tile_active else "archetype-tile"
+    for i, (name, data) in enumerate(archetypes.items()):
+        col = cols[i % 3]
 
-        # The invisible-button wrapper
-        clicked = st.button(
-            label=f"""
-            <div class="{tile_class}">
-            <h4>{name}</h4>
-            </div>
-            """,
-            key=f"arche_{name}",
-            help=f"Open details for {name}",
-            use_container_width=True,
-            type="primary",
-            disabled=False,
-        )
+        with col:
+            active = (st.session_state["open_archetype"] == name)
+            tile_class = "archetype-tile active" if active else "archetype-tile"
 
-        # Fix button styling
-        st.markdown(
-            "<style>button[kind='primary'][key='arche_{name}']{all:unset}</style>",
-            unsafe_allow_html=True
-        )
+            # Invisible yet fully clickable button wrapper
+            clicked = st.button(
+                label=f"""
+                <div class="{tile_class}">
+                    <h4>{name}</h4>
+                </div>
+                """,
+                key=f"arche_btn_{name}",
+                use_container_width=True
+            )
 
-        if clicked:
-            # Toggle behaviour
-            if st.session_state["open_archetype"] == name:
-                st.session_state["open_archetype"] = None
-            else:
-                st.session_state["open_archetype"] = name
+            # Force streamlit button to be invisible
+            st.markdown(f"""
+            <style>
+            button[data-testid="baseButton-secondary"][key="arche_btn_{name}"] {{
+                background: none !important;
+                border: none !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }}
+            </style>
+            """, unsafe_allow_html=True)
 
-# ------------------------------------------------------------
-# EXPANDED PANEL
-# ------------------------------------------------------------
+            if clicked:
+                # Toggle behaviour
+                if st.session_state["open_archetype"] == name:
+                    st.session_state["open_archetype"] = None
+                else:
+                    st.session_state["open_archetype"] = name
 
-if st.session_state["open_archetype"]:
-    a = st.session_state["open_archetype"]
-    info = archetypes[a]
+    # EXPANDED PANEL
+    if st.session_state["open_archetype"]:
+        a = st.session_state["open_archetype"]
+        info = archetypes[a]
 
-    st.markdown(f"""
-    <div class="archetype-panel">
-    <h2 style="text-align:center;">{a}</h2>
-    <p>{info.get("description","")}</p>
+        st.markdown(f"""
+        <div class="archetype-panel">
+         <h2 style="text-align:center;">{a}</h2>
+        <p>{info.get("description","")}</p>
 
-    <h4>Strengths</h4>
-    <ul>{''.join([f"<li>{s}</li>" for s in info.get('strengths',[])])}</ul>
+        <h4>Strengths</h4>
+        <ul>{''.join([f'<li>{s}</li>' for s in info.get('strengths',[])])}</ul>
 
-    <h4>Risks</h4>
-    <ul>{''.join([f"<li>{r}</li>" for r in info.get('risks',[])])}</ul>
+        <h4>Risks</h4>
+        <ul>{''.join([f'<li>{r}</li>' for r in info.get('risks',[])])}</ul>
 
-    <h4>Pathways</h4>
-    <ul>{''.join([f"<li>{p}</li>" for p in info.get('pathways',[])])}</ul>
+        <h4>Pathways</h4>
+        <ul>{''.join([f'<li>{p}</li>' for p in info.get('pathways',[])])}</ul>
 
-    <h4>Business Models</h4>
-    <ul>{''.join([f"<li>{bm}</li>" for bm in info.get('business_models',[])])}</ul>
+        <h4>Business Models</h4>
+        <ul>{''.join([f'<li>{bm}</li>' for bm in info.get('business_models',[])])}</ul>
 
-    <h4>Funding Strategy</h4>
-    <ul>{''.join([f"<li>{fs}</li>" for fs in info.get('funding_strategy',[])])}</ul>
-    </div>
-    """, unsafe_allow_html=True)
+        <h4>Funding Strategy Fit</h4>
+        <ul>{''.join([f'<li>{fs}</li>' for fs in info.get('funding_strategy',[])])}</ul>
+        </div>
+        """, unsafe_allow_html=True)
