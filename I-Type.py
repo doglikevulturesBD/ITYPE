@@ -322,26 +322,41 @@ elif step == 3:
 
 
 # ============================================================
-# ARCHETYPE LIBRARY — 3×3 GLOWING TILE GRID (ONLY STEP 3)
+# ============================================================
+# ARCHETYPE LIBRARY — CLEAN 3×3 CLICKABLE TILE GRID
 # ============================================================
 
 if step == 3:
+
     st.markdown("<hr><h2>Explore All Archetypes</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='opacity:0.85;'>Click any tile to view details.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='opacity:0.85;'>Click a tile below to view the full archetype profile.</p>", unsafe_allow_html=True)
 
-    st.markdown("<div class='archetype-grid'>", unsafe_allow_html=True)
+    # Layout: 3×3 matrix
+    tile_names = list(archetypes.keys())
+    rows = [tile_names[i:i+3] for i in range(0, len(tile_names), 3)]
 
-    for name in archetypes.keys():
-        active = (st.session_state["open_archetype"] == name)
-        tile_class = "archetype-tile active" if active else "archetype-tile"
+    # Render tiles
+    for row in rows:
+        cols = st.columns(3)
+        for col, name in zip(cols, row):
+            active = (st.session_state["open_archetype"] == name)
+            tile_class = "archetype-tile active" if active else "archetype-tile"
 
-        with st.form(key=f"form_{name}"):
-            st.markdown(f"<div class='{tile_class}'><h4>{name}</h4></div>", unsafe_allow_html=True)
-            if st.form_submit_button(""):
-                st.session_state["open_archetype"] = None if active else name
+            with col:
+                # CLICKABLE TILE — USE st.button WITH HTML INSIDE
+                if st.button(
+                    label=f"<div class='{tile_class}'><h4>{name}</h4></div>",
+                    key=f"tile_{name}",
+                    help=f"View profile for {name}",
+                    use_container_width=True
+                ):
+                    # toggle open/close logic
+                    if active:
+                        st.session_state["open_archetype"] = None
+                    else:
+                        st.session_state["open_archetype"] = name
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
+    # EXPANDED PANEL
     if st.session_state["open_archetype"]:
         a = st.session_state["open_archetype"]
         info = archetypes[a]
@@ -352,19 +367,19 @@ if step == 3:
         <p>{info.get('description','')}</p>
 
         <h4>Strengths</h4>
-        <ul>{''.join([f"<li>{x}</li>" for x in info['strengths']])}</ul>
+        <ul>{''.join([f'<li>{x}</li>' for x in info['strengths']])}</ul>
 
         <h4>Risks</h4>
-        <ul>{''.join([f"<li>{x}</li>" for x in info['risks']])}</ul>
+        <ul>{''.join([f'<li>{x}</li>' for x in info['risks']])}</ul>
 
         <h4>Pathways</h4>
-        <ul>{''.join([f"<li>{x}</li>" for x in info['pathways']])}</ul>
+        <ul>{''.join([f'<li>{x}</li>' for x in info['pathways']])}</ul>
 
         <h4>Business Models</h4>
-        <ul>{''.join([f"<li>{x}</li>" for x in info['business_models']])}</ul>
+        <ul>{''.join([f'<li>{x}</li>' for x in info['business_models']])}</ul>
 
         <h4>Funding Strategy</h4>
-        <ul>{''.join([f"<li>{x}</li>" for x in info['funding_strategy']])}</ul>
+        <ul>{''.join([f'<li>{x}</li>' for x in info['funding_strategy']])}</ul>
         </div>
         """, unsafe_allow_html=True)
 
