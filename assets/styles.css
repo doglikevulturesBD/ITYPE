@@ -333,3 +333,14 @@ body, .main, .stApp {
     transform: translateY(-3px) scale(1.02);
     box-shadow: 0 0 28px rgba(0,255,255,0.35);
 }
+
+/* Wrapper that keeps selectbox visually inside tile */
+.scenario-select-wrapper {
+    background: rgba(0,255,255,0.05);
+    border: 1px solid rgba(0,255,255,0.15);
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-top: -25px;  /* brings selectbox closer to text */
+    margin-bottom: 5px;
+    backdrop-filter: blur(6px);
+}
