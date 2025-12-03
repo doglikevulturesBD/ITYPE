@@ -274,10 +274,10 @@ elif step == 3:
                 # ----------------------------------------------
                 st.markdown(f"""
                 <div class='itype-result-card'>
-                    <h1>{primary_name}</h1>
-                    <p>{archetype_data.get("description","")}</p>
-                    <p><b>Stability:</b> {stability:.1f}%</p>
-                    <p><b>Shadow archetype:</b> {shadow_name} ({shadow_pct:.1f}%)</p>
+                <h1>{primary_name}</h1>
+                <p>{archetype_data.get("description","")}</p>
+                <p><b>Stability:</b> {stability:.1f}%</p>
+                <p><b>Shadow archetype:</b> {shadow_name} ({shadow_pct:.1f}%)</p>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -456,22 +456,22 @@ elif step == 3:
 
             st.markdown(f"""
             <div class="archetype-panel">
-                <h2 style="text-align:center;">{a}</h2>
-                <p>{info.get("description","")}</p>
+            <h2 style="text-align:center;">{a}</h2>
+            <p>{info.get("description","")}</p>
 
-                <h4>Strengths</h4>
-                <ul>{''.join([f'<li>{s}</li>' for s in info.get('strengths',[])])}</ul>
+            <h4>Strengths</h4>
+            <ul>{''.join([f'<li>{s}</li>' for s in info.get('strengths',[])])}</ul>
 
-                <h4>Risks</h4>
-                <ul>{''.join([f'<li>{r}</li>' for r in info.get('risks',[])])}</ul>
+            <h4>Risks</h4>
+            <ul>{''.join([f'<li>{r}</li>' for r in info.get('risks',[])])}</ul>
 
-                <h4>Pathways</h4>
-                <ul>{''.join([f'<li>{p}</li>' for p in info.get('pathways',[])])}</ul>
+            <h4>Pathways</h4>
+            <ul>{''.join([f'<li>{p}</li>' for p in info.get('pathways',[])])}</ul>
 
-                <h4>Business Models</h4>
-                <ul>{''.join([f'<li>{bm}</li>' for bm in info.get('business_models',[])])}</ul>
+            <h4>Business Models</h4>
+            <ul>{''.join([f'<li>{bm}</li>' for bm in info.get('business_models',[])])}</ul>
 
-                <h4>Funding Strategy Fit</h4>
-                <ul>{''.join([f'<li>{fs}</li>' for fs in info.get('funding_strategy',[])])}</ul>
+            <h4>Funding Strategy Fit</h4>
+            <ul>{''.join([f'<li>{fs}</li>' for fs in info.get('funding_strategy',[])])}</ul>
             </div>
             """, unsafe_allow_html=True)
