@@ -240,3 +240,25 @@
     100% { opacity: 1; }
 }
 
+/* ============================================================
+   FULL-WIDTH HERO FIX FOR STREAMLIT
+============================================================ */
+
+/* Let hero break out of Streamlit's centered container */
+.hero-wrapper {
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    width: 100vw;
+    max-width: 100vw;
+    overflow: hidden;
+}
+
+/* Ensure contents stay proportional */
+.hero-wrapper .hero {
+    border-radius: 0;
+    width: 100%;
+    height: 30vh !important;
+}
