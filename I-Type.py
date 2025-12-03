@@ -440,41 +440,64 @@ for name, data in archetypes.items():
 
 st.markdown("</div>", unsafe_allow_html=True)
 
-# Show expanded panel
+# ============================================================
+# ARCHETYPE LIBRARY — 3×3 CLICKABLE TILE GRID
+# ============================================================
+
+st.markdown("<hr><h2>Explore All Archetypes</h2>", unsafe_allow_html=True)
+st.markdown("<p style='opacity:0.85;'>Click any tile to read the archetype details.</p>", unsafe_allow_html=True)
+
+# Keep track of the open panel
+if "open_archetype" not in st.session_state:
+    st.session_state["open_archetype"] = None
+
+# Render grid
+st.markdown("<div class='archetype-grid'>", unsafe_allow_html=True)
+
+for name in archetypes.keys():
+    is_active = (st.session_state["open_archetype"] == name)
+
+    # Wrap each tile in a form (Streamlit trick for multi-column buttons)
+    with st.form(key=f"form_{name}"):
+        tile_class = "archetype-tile active" if is_active else "archetype-tile"
+
+        st.markdown(
+            f"<div class='{tile_class}'><h4>{name}</h4></div>",
+            unsafe_allow_html=True
+        )
+
+        pressed = st.form_submit_button("",)
+        if pressed:
+            if is_active:
+                st.session_state["open_archetype"] = None
+            else:
+                st.session_state["open_archetype"] = name
+
+st.markdown("</div>", unsafe_allow_html=True)
+
+# Expanded panel
 if st.session_state["open_archetype"]:
     a = st.session_state["open_archetype"]
     info = archetypes[a]
 
     st.markdown(f"""
     <div class='archetype-panel'>
-    <h2 style="text-align:center; margin-bottom:10px;">
-    {a}
-    </h2>
-    <p style="opacity:0.85;">{info.get("description","")}</p>
+    <h2 style="text-align:center;">{a}</h2>
+    <p>{info.get('description','')}</p>
 
     <h4>Strengths</h4>
-    <ul>
-    {''.join([f'<li>{s}</li>' for s in info.get("strengths",[])])}
-    </ul>
+    <ul>{''.join([f'<li>{s}</li>' for s in info.get('strengths',[])])}</ul>
 
-    <h4>Risks & Growth Edges</h4>
-    <ul>
-    {''.join([f'<li>{r}</li>' for r in info.get("risks",[])])}
-    </ul>
+    <h4>Risks</h4>
+    <ul>{''.join([f'<li>{r}</li>' for r in info.get('risks',[])])}</ul>
 
-    <h4>Recommended Pathways</h4>
-    <ul>
-    {''.join([f'<li>{p}</li>' for p in info.get("pathways",[])])}
-    </ul>
+    <h4>Pathways</h4>
+    <ul>{''.join([f'<li>{p}</li>' for p in info.get('pathways',[])])}</ul>
 
-    <h4>Business Model Fit</h4>
-    <ul>
-    {''.join([f'<li>{bm}</li>' for bm in info.get("business_models",[])])}
-    </ul>
+    <h4>Business Models</h4>
+    <ul>{''.join([f'<li>{bm}</li>' for bm in info.get('business_models',[])])}</ul>
 
-    <h4>Funding Strategy Fit</h4>
-    <ul>
-            {''.join([f'<li>{fs}</li>' for fs in info.get("funding_strategy",[])])}
-    </ul>
+    <h4>Funding Fit</h4>
+    <ul>{''.join([f'<li>{fs}</li>' for fs in info.get('funding_strategy',[])])}</ul>
     </div>
     """, unsafe_allow_html=True)
