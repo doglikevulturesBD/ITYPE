@@ -508,3 +508,17 @@ body, .main, .stApp {
     border: 1px solid rgba(0,255,255,0.4);
     box-shadow: 0 0 25px rgba(0,255,255,0.3);
 }
+
+/* REMOVE STREAMLIT BUTTON LOOK COMPLETELY */
+button.arche-btn {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+/* Ensure Streamlit doesn't force its own styling */
+button.arche-btn:hover {
+    background: none !important;
+    border: none !important;
+}
